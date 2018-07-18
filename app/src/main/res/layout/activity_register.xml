@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    tools:context=".LoginActivity">
+    tools:context=".RegisterActivity">
 
     <TextView
         android:id="@+id/RegistrationPageLogo"
@@ -17,7 +17,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="64dp"
         android:contentDescription="Logo Login Page"
-        android:text="@string/Login_Logo_Page"
+        android:text="Register for an Account"
         android:textColor="@android:color/white"
         android:textSize="32dp"
         android:textStyle="bold"
@@ -56,7 +56,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:hint="@string/pass_hint"
+        android:hint="@string/regConfirmPass"
         android:inputType="textPassword"
         android:padding="16dp"
         android:textColor="@android:color/white"
@@ -65,10 +65,10 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/regEmail" />
+        app:layout_constraintTop_toBottomOf="@+id/regPass" />
 
     <Button
-        android:id="@+id/LoginButton"
+        android:id="@+id/regButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -79,7 +79,7 @@
         android:background="@color/colorAccent"
         android:paddingBottom="20dp"
         android:paddingTop="20dp"
-        android:text="@string/login_btn_text"
+        android:text="@string/regButtonText"
         android:textAllCaps="false"
         android:textColor="@android:color/white"
         android:textSize="18sp"
@@ -88,7 +88,7 @@
         app:layout_constraintTop_toBottomOf="@+id/regConfirmPass" />
 
     <Button
-        android:id="@+id/NewAccountButton"
+        android:id="@+id/regLoginButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -99,7 +99,7 @@
         android:background="@android:color/white"
         android:paddingBottom="20dp"
         android:paddingTop="20dp"
-        android:text="@string/login_reg_btn_text"
+        android:text="@string/regLoginText"
         android:textAllCaps="false"
         android:textColor="@color/colorAccent"
         android:textSize="18sp"
@@ -108,7 +108,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ProgressBar
-        android:id="@+id/loginProgress"
+        android:id="@+id/regProgress"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -122,5 +122,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/regPass"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="@string/regPassword"
+        android:inputType="textPassword"
+        android:padding="16dp"
+        android:textColor="@android:color/white"
+        android:textColorHint="@color/WhiteHint"
+        android:textColorLink="@android:color/white"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/regEmail" />
 
 </android.support.constraint.ConstraintLayout>

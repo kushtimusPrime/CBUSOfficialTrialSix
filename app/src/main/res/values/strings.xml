@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">CBUSOfficialTrialSix</string>
+    <string name="pass_hint">Password</string>
+    <string name="email_hint">Your Email</string>
+    <string name="Login_Logo_Page">Welcome to CBUS</string>
+    <string name="login_btn_text">Login to Account</string>
+    <string name="login_reg_btn_text">Need a new Account?</string>
 </resources>

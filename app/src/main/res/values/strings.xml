@@ -12,4 +12,5 @@
     <string name="regLoginText">Already Have an Account?</string>
     <string name="regPassword">Password</string>
     <string name="regConfirmPass">Confirm Password</string>
+    <string name="DescriptionProfilePicture">Profile Picture</string>
 </resources>

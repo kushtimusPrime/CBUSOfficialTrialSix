@@ -13,4 +13,6 @@
     <string name="regPassword">Password</string>
     <string name="regConfirmPass">Confirm Password</string>
     <string name="DescriptionProfilePicture">Profile Picture</string>
+    <string name="setupNameHint">Name</string>
+    <string name="setupButtonNameText">Save Account Settings</string>
 </resources>

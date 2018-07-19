@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -44,6 +45,7 @@ public class SetupActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private ProgressBar setupBar;
     private FirebaseFirestore firebaseFirestore;
+    private String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,14 +59,32 @@ public class SetupActivity extends AppCompatActivity {
         setupButton=(Button)findViewById(R.id.setupButton);
         storageReference= FirebaseStorage.getInstance().getReference();
         firebaseAuth=FirebaseAuth.getInstance();
+        userID=firebaseAuth.getCurrentUser().getUid();
         firebaseFirestore=FirebaseFirestore.getInstance();
         setupBar=(ProgressBar)findViewById(R.id.setupBar);
+        firebaseFirestore.collection("Users").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    if(task.getResult().exists()) {
+                        Toast.makeText(SetupActivity.this,"Data exists",Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(SetupActivity.this,"Data doesn't exist",Toast.LENGTH_LONG).show();
+
+                    }
+
+                } else {
+                    String errorMessage=task.getException().getMessage();
+                    Toast.makeText(SetupActivity.this,"Firestore Retrieve  Error: "+errorMessage,Toast.LENGTH_LONG).show();
+                }
+            }
+        });
         setupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final String username=setupName.getText().toString();
                 if(!TextUtils.isEmpty(username)&&mainImageUri!=null) {
-                    final String userID=firebaseAuth.getCurrentUser().getUid();
+                    userID=firebaseAuth.getCurrentUser().getUid();
                     setupBar.setVisibility(View.VISIBLE);
                     final StorageReference imagePath=storageReference.child("profile images").child(userID+".jpg");
                     imagePath.putFile(mainImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {

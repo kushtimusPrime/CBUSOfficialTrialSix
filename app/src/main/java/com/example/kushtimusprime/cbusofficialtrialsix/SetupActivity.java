@@ -19,6 +19,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -67,7 +69,12 @@ public class SetupActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()) {
                     if(task.getResult().exists()) {
-                        Toast.makeText(SetupActivity.this,"Data exists",Toast.LENGTH_LONG).show();
+                        String name=task.getResult().getString("name");
+                        String image=task.getResult().getString("image");
+                        setupName.setText(name);
+                        RequestOptions placeholderRequest=new RequestOptions();
+                        placeholderRequest.placeholder(R.drawable.profile_picture);
+                        Glide.with(SetupActivity.this).setDefaultRequestOptions(placeholderRequest).load(image).into(profilePicture);
                     } else {
                         Toast.makeText(SetupActivity.this,"Data doesn't exist",Toast.LENGTH_LONG).show();
 

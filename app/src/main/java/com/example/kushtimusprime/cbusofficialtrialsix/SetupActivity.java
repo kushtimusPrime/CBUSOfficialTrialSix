@@ -1,5 +1,4 @@
 package com.example.kushtimusprime.cbusofficialtrialsix;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,14 +19,21 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -40,6 +46,9 @@ public class SetupActivity extends AppCompatActivity {
     private StorageReference storageReference;
     private FirebaseAuth firebaseAuth;
     private ProgressBar setupBar;
+    private FirebaseFirestore firebaseFirestore;
+    private String userID;
+    private boolean isChanged=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,31 +62,64 @@ public class SetupActivity extends AppCompatActivity {
         setupButton=(Button)findViewById(R.id.setupButton);
         storageReference= FirebaseStorage.getInstance().getReference();
         firebaseAuth=FirebaseAuth.getInstance();
+        userID=firebaseAuth.getCurrentUser().getUid();
+        firebaseFirestore=FirebaseFirestore.getInstance();
         setupBar=(ProgressBar)findViewById(R.id.setupBar);
+        setupBar.setVisibility(View.VISIBLE);
+        setupButton.setEnabled(false);
+        firebaseFirestore.collection("Users").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    if(task.getResult().exists()) {
+                        String name=task.getResult().getString("name");
+                        String image=task.getResult().getString("image");
+                        mainImageUri=Uri.parse(image);
+                        setupName.setText(name);
+                        RequestOptions placeholderRequest=new RequestOptions();
+                        placeholderRequest.placeholder(R.drawable.profile_picture);
+                        Glide.with(SetupActivity.this).setDefaultRequestOptions(placeholderRequest).load(image).into(profilePicture);
+                    } else {
+                        Toast.makeText(SetupActivity.this,"Data doesn't exist",Toast.LENGTH_LONG).show();
+
+                    }
+
+                } else {
+                    String errorMessage=task.getException().getMessage();
+                    Toast.makeText(SetupActivity.this,"Firestore Retrieve Error: "+errorMessage,Toast.LENGTH_LONG).show();
+                }
+                setupBar.setVisibility(View.INVISIBLE);
+                setupButton.setEnabled(true);
+
+            }
+        });
         setupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String username=setupName.getText().toString();
-                if(!TextUtils.isEmpty(username)&&mainImageUri!=null) {
-                    String userID=firebaseAuth.getCurrentUser().getUid();
+                final String username = setupName.getText().toString();
+                if (!TextUtils.isEmpty(username) && mainImageUri != null) {
                     setupBar.setVisibility(View.VISIBLE);
-                    StorageReference imagePath=storageReference.child("profile images").child(userID+".jpg");
-                    imagePath.putFile(mainImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                            if(task.isSuccessful()) {
-                                Uri downloadURI=task.getResult().getDownloadUrl();
-                                Toast.makeText(SetupActivity.this,"The image is uploaded" ,Toast.LENGTH_LONG).show();
+                     if(isChanged) {
+                        userID = firebaseAuth.getCurrentUser().getUid();
+                        final StorageReference imagePath = storageReference.child("profile images").child(userID + ".jpg");
+                        imagePath.putFile(mainImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    storeFirestore(task, username);
+                                } else {
+                                    String errorMessage = task.getException().getMessage();
+                                    Toast.makeText(SetupActivity.this, "Image Error: " + errorMessage, Toast.LENGTH_LONG).show();
+                                    setupBar.setVisibility(View.INVISIBLE);
 
-                            } else {
-                                String errorMessage=task.getException().getMessage();
-                                Toast.makeText(SetupActivity.this,"Error: "+errorMessage,Toast.LENGTH_LONG).show();
+                                }
+
+
                             }
-                            setupBar.setVisibility(View.INVISIBLE);
-
-
-                        }
-                    });
+                        });
+                    } else {
+                         storeFirestore(null,username);
+                     }
                 }
             }
         });
@@ -95,7 +137,40 @@ public class SetupActivity extends AppCompatActivity {
                                 .start(SetupActivity.this);
 
                     }
+                } else {
+                    CropImage.activity()
+                            .setGuidelines(CropImageView.Guidelines.ON)
+                            .start(SetupActivity.this);
                 }
+            }
+        });
+    }
+
+    private void storeFirestore(@NonNull Task<UploadTask.TaskSnapshot> task,String username) {
+        Uri downloadURI;
+        if(task!=null) {
+            downloadURI = task.getResult().getDownloadUrl();
+        } else {
+            downloadURI=mainImageUri;
+        }
+        Map<String,String> userMap=new HashMap<>();
+        userMap.put("name",username);
+        userMap.put("image",downloadURI.toString());
+        firebaseFirestore.collection("Users").document(userID).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()) {
+                    Toast.makeText(SetupActivity.this,"User settings are updated",Toast.LENGTH_LONG).show();
+                    Intent mainIntent=new Intent(SetupActivity.this,MainActivity.class);
+                    startActivity(mainIntent);
+                    finish();
+
+                } else {
+                    String errorMessage=task.getException().getMessage();
+                    Toast.makeText(SetupActivity.this,"Firestore Error: "+errorMessage,Toast.LENGTH_LONG).show();
+                }
+                setupBar.setVisibility(View.INVISIBLE);
+
             }
         });
     }
@@ -108,6 +183,7 @@ public class SetupActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 mainImageUri  = result.getUri();
                 profilePicture.setImageURI(mainImageUri);
+                isChanged=true;
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }

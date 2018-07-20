@@ -15,4 +15,6 @@
     <string name="DescriptionProfilePicture">Profile Picture</string>
     <string name="setupNameHint">Name</string>
     <string name="setupButtonNameText">Save Account Settings</string>
+    <string name="PostDescriptionHint">Add description</string>
+    <string name="addNewPost">Post Blog</string>
 </resources>

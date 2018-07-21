@@ -2,7 +2,10 @@ package com.example.kushtimusprime.cbusofficialtrialsix;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -24,6 +27,10 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton addPostButton;
     private FirebaseFirestore firebaseFirestore;
     private String currentUserID;
+    private BottomNavigationView mainBottomNav;
+    private HomeFragment homeFragment;
+    private NotificationFragment notificationFragment;
+    private AccountFragment accountFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         mainToolbar=(Toolbar)findViewById(R.id.mainToolbar);
         setSupportActionBar(mainToolbar);
         getSupportActionBar().setTitle("CBUS");
+        mainBottomNav=findViewById(R.id.mainBottomNav);
         addPostButton=(FloatingActionButton)findViewById(R.id.addPostButton);
         addPostButton.setOnClickListener(new View.OnClickListener() {
             @Override

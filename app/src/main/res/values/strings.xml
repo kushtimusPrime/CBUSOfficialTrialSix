@@ -17,4 +17,10 @@
     <string name="setupButtonNameText">Save Account Settings</string>
     <string name="PostDescriptionHint">Add description</string>
     <string name="addNewPost">Post Blog</string>
+    <string name="bottomHomeText">Home</string>
+    <string name="BottomNotificationText">Notifications</string>
+    <string name="bottomAccountText">Account</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

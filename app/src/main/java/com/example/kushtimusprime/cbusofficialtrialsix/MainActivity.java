@@ -43,6 +43,27 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("CBUS");
         mainBottomNav=findViewById(R.id.mainBottomNav);
         addPostButton=(FloatingActionButton)findViewById(R.id.addPostButton);
+        homeFragment=new HomeFragment();
+        accountFragment=new AccountFragment();
+        notificationFragment=new NotificationFragment();
+        mainBottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch(menuItem.getItemId()) {
+                    case R.id.bottomHome:
+                        replaceFragment(homeFragment);
+                        return true;
+                    case R.id.bottomAccount:
+                        replaceFragment(accountFragment);
+                        return true;
+                    case R.id.bottomNotification:
+                        replaceFragment(notificationFragment);
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
         addPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,5 +135,10 @@ public class MainActivity extends AppCompatActivity {
     private void logOut() {
         mAuth.signOut();
         sendToLogin();
+    }
+    private void replaceFragment(Fragment fragment) {
+        FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.mainContainer,fragment);
+        fragmentTransaction.commit();
     }
 }

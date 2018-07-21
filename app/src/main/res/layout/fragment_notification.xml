@@ -10,6 +10,7 @@
         android:id="@+id/bottomNotification"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Notification Fragment" />
+        android:text="Notification Fragment"
+        android:textSize="30sp" />
 
 </FrameLayout>

@@ -10,6 +10,7 @@
         android:id="@+id/bottomAccount"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Account Fragment" />
+        android:text="Account Fragment"
+        android:textSize="36sp" />
 
 </FrameLayout>

@@ -1,6 +1,7 @@
 package com.example.kushtimusprime.cbusofficialtrialsix;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +17,8 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -27,10 +30,18 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
+
+import id.zelory.compressor.Compressor;
 
 public class NewPostActivity extends AppCompatActivity {
+    private static final int MAX_LENGTH = 200;
     private android.support.v7.widget.Toolbar newPostToolbar;
     private ImageView newPostImage;
     private EditText newPostDescription;
@@ -41,6 +52,7 @@ public class NewPostActivity extends AppCompatActivity {
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth mAuth;
     private String currentUserID;
+    private Bitmap compressedImageFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,12 +85,34 @@ public class NewPostActivity extends AppCompatActivity {
                 final String desc=newPostDescription.getText().toString();
                 if(!TextUtils.isEmpty(desc)&&postImageUri!=null) {
                     postProgressBar.setVisibility(View.VISIBLE);
-                    String randomName= FieldValue.serverTimestamp().toString();
+                    final String randomName= UUID.randomUUID().toString();
                     StorageReference filePath=storageReference.child("Post Images").child(randomName+".jpg");
                     filePath.putFile(postImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                             if(task.isSuccessful()) {
+                                File imageFile=new File(postImageUri.getPath());
+                                try {
+                                    compressedImageFile = new Compressor(NewPostActivity.this).compressToBitmap(imageFile);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                compressedImageFile.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                                byte[] thumbData = baos.toByteArray();
+                                UploadTask uploadTask=storageReference.child("Post Images/Thumbnails").child(randomName+".jpg").putBytes(thumbData);
+                                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        String errorMessage=e.getMessage();
+                                        Toast.makeText(NewPostActivity.this,"Error: "+errorMessage,Toast.LENGTH_LONG).show();
+                                    }
+                                });
                                 String downloadUri=task.getResult().getDownloadUrl().toString();
                                 Map<String,Object> postMap=new HashMap<>();
                                 postMap.put("image uri",downloadUri);
@@ -128,5 +162,16 @@ public class NewPostActivity extends AppCompatActivity {
                 Exception error = result.getError();
             }
         }
+    }
+    public static String random() {
+        Random generator = new Random();
+        StringBuilder randomStringBuilder = new StringBuilder();
+        int randomLength = generator.nextInt(MAX_LENGTH);
+        char tempChar;
+        for (int i = 0; i < randomLength; i++){
+            tempChar = (char) (generator.nextInt(96) + 32);
+            randomStringBuilder.append(tempChar);
+        }
+        return randomStringBuilder.toString();
     }
 }

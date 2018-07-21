@@ -26,7 +26,7 @@
         android:clickable="true"
         app:layout_constraintBottom_toTopOf="@+id/mainBottomNav"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/new_pin"
+        app:srcCompat="@drawable/baseline_place_white_24dp"
         tools:ignore="MissingConstraints" />
 
     <android.support.design.widget.BottomNavigationView

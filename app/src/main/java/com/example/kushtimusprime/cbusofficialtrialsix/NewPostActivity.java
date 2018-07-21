@@ -89,66 +89,71 @@ public class NewPostActivity extends AppCompatActivity {
                     StorageReference filePath=storageReference.child("Post Images").child(randomName+".jpg");
                     filePath.putFile(postImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                         @Override
-                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                        public void onComplete(@NonNull final Task<UploadTask.TaskSnapshot> task) {
+                            final String downloadUri=task.getResult().getDownloadUrl().toString();
+
                             if(task.isSuccessful()) {
-                                File imageFile=new File(postImageUri.getPath());
+                                File imageFile = new File(postImageUri.getPath());
                                 try {
-                                    compressedImageFile = new Compressor(NewPostActivity.this).compressToBitmap(imageFile);
+                                    compressedImageFile = new Compressor(NewPostActivity.this)
+                                            .setMaxHeight(100)
+                                            .setMaxWidth(100)
+                                            .setQuality(2)
+                                            .compressToBitmap(imageFile);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
                                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                                 compressedImageFile.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                                 byte[] thumbData = baos.toByteArray();
-                                UploadTask uploadTask=storageReference.child("Post Images/Thumbnails").child(randomName+".jpg").putBytes(thumbData);
+                                UploadTask uploadTask = storageReference.child("Post Images/Thumbnails").child(randomName + ".jpg").putBytes(thumbData);
                                 uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                     @Override
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                        String downloadThumbUri = taskSnapshot.getDownloadUrl().toString();
+                                        Map<String, Object> postMap = new HashMap<>();
+                                        postMap.put("image uri", downloadUri);
+                                        postMap.put("thumbnail uri", downloadThumbUri);
+                                        postMap.put("desc", desc);
+                                        postMap.put("user id", currentUserID);
+                                        postMap.put("timestamp", FieldValue.serverTimestamp());
+                                        firebaseFirestore.collection("Posts").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                if (task.isSuccessful()) {
+                                                    Toast.makeText(NewPostActivity.this, "Post was successful", Toast.LENGTH_LONG).show();
+                                                    Intent mainIntent = new Intent(NewPostActivity.this, MainActivity.class);
+                                                    startActivity(mainIntent);
+                                                    finish();
 
+                                                } else {
+                                                    String errorMessage = task.getException().getMessage();
+                                                    Toast.makeText(NewPostActivity.this, "Error: " + errorMessage, Toast.LENGTH_LONG).show();
+                                                }
+                                                postProgressBar.setVisibility(View.INVISIBLE);
+                                            }
+                                        });
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        String errorMessage=e.getMessage();
-                                        Toast.makeText(NewPostActivity.this,"Error: "+errorMessage,Toast.LENGTH_LONG).show();
-                                    }
-                                });
-                                String downloadUri=task.getResult().getDownloadUrl().toString();
-                                Map<String,Object> postMap=new HashMap<>();
-                                postMap.put("image uri",downloadUri);
-                                postMap.put("desc",desc);
-                                postMap.put("user id",currentUserID);
-                                postMap.put("timestamp",FieldValue.serverTimestamp());
-                                firebaseFirestore.collection("Posts").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DocumentReference> task) {
-                                        if(task.isSuccessful()) {
-                                            Toast.makeText(NewPostActivity.this,"Post was successful",Toast.LENGTH_LONG).show();
-                                            Intent mainIntent=new Intent(NewPostActivity.this,MainActivity.class);
-                                            startActivity(mainIntent);
-                                            finish();
-
-                                        } else {
-                                            String errorMessage=task.getException().getMessage();
-                                            Toast.makeText(NewPostActivity.this,"Error: "+errorMessage,Toast.LENGTH_LONG).show();
-                                        }
-                                        postProgressBar.setVisibility(View.INVISIBLE);
+                                        String errorMessage = e.getMessage();
+                                        Toast.makeText(NewPostActivity.this, "Error: " + errorMessage, Toast.LENGTH_LONG).show();
                                     }
                                 });
                             } else {
                                 postProgressBar.setVisibility(View.INVISIBLE);
-
                             }
+
                         }
+
+
                     });
-                } else {
-                    Toast.makeText(NewPostActivity.this,"Please select an image and/or write a description",Toast.LENGTH_LONG).show();
+
                 }
             }
         });
-
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

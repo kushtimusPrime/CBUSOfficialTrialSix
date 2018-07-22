@@ -62,9 +62,9 @@ public class NewPostActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Add a new post");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         newPostImage=(ImageView)findViewById(R.id.newPostImage);
-        newPostDescription=(EditText) findViewById(R.id.newPostDescription);
-        postButton=(Button) findViewById(R.id.postButton);
-        storageReference= FirebaseStorage.getInstance().getReference();
+        newPostDescription=(EditText)findViewById(R.id.newPostDescription);
+        postButton=(Button)findViewById(R.id.postButton);
+        storageReference=FirebaseStorage.getInstance().getReference();
         firebaseFirestore=FirebaseFirestore.getInstance();
         mAuth=FirebaseAuth.getInstance();
         currentUserID=mAuth.getCurrentUser().getUid();
@@ -111,10 +111,10 @@ public class NewPostActivity extends AppCompatActivity {
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                         String downloadThumbUri = taskSnapshot.getDownloadUrl().toString();
                                         Map<String, Object> postMap = new HashMap<>();
-                                        postMap.put("image uri", downloadUri);
-                                        postMap.put("thumbnail uri", downloadThumbUri);
+                                        postMap.put("imageUri", downloadUri);
+                                        postMap.put("imageThumb", downloadThumbUri);
                                         postMap.put("desc", desc);
-                                        postMap.put("user id", currentUserID);
+                                        postMap.put("userID", currentUserID);
                                         postMap.put("timestamp", FieldValue.serverTimestamp());
                                         firebaseFirestore.collection("Posts").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                             @Override

@@ -73,7 +73,7 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
         private ImageView blogImageView;
         private TextView blogDate;
         private TextView blogUserName;
-        private CircleImageView blogUserImage;
+        private ImageView blogUserImage;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mView=itemView;

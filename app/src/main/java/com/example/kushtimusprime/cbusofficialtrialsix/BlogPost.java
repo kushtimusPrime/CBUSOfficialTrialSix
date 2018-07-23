@@ -1,18 +1,22 @@
 package com.example.kushtimusprime.cbusofficialtrialsix;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 public class BlogPost {
     public String userID;
     public String imageUri;
     public String desc;
     public String imageThumb;
+    public Date timestamp;
 
-    public BlogPost(String userID, String imageUri, String desc, String imageThumb) {
+
+    public BlogPost(String userID, String imageUri, String desc, String imageThumb, Date timestamp) {
         this.userID = userID;
         this.imageUri = imageUri;
         this.desc = desc;
         this.imageThumb = imageThumb;
+        this.timestamp = timestamp;
     }
     public BlogPost() {
 
@@ -50,7 +54,13 @@ public class BlogPost {
         this.imageThumb = imageThumb;
     }
 
+    public Date getTimestamp() {
+        return timestamp;
+    }
 
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
 
 
 }

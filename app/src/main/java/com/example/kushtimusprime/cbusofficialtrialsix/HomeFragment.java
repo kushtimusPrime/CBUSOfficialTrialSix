@@ -61,6 +61,7 @@ public class HomeFragment extends Fragment {
                 if(reachedBottom) {
                     //theres supposed to be a toast here but it's causing trouble so i took it out
                     loadMorePosts();
+                    //:)
                 }
             }
         });

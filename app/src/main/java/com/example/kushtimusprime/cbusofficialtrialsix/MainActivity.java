@@ -36,20 +36,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mAuth=FirebaseAuth.getInstance();
-        firebaseFirestore=FirebaseFirestore.getInstance();
-        mainToolbar=(Toolbar)findViewById(R.id.mainToolbar);
+        mAuth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        mainToolbar = (Toolbar) findViewById(R.id.mainToolbar);
         setSupportActionBar(mainToolbar);
         getSupportActionBar().setTitle("CBUS");
-        mainBottomNav=findViewById(R.id.mainBottomNav);
-        addPostButton=(FloatingActionButton)findViewById(R.id.addPostButton);
-        homeFragment=new HomeFragment();
-        accountFragment=new AccountFragment();
-        notificationFragment=new NotificationFragment();
+        if (mAuth.getCurrentUser() != null){
+        mainBottomNav = findViewById(R.id.mainBottomNav);
+        addPostButton = (FloatingActionButton) findViewById(R.id.addPostButton);
+        homeFragment = new HomeFragment();
+        accountFragment = new AccountFragment();
+        notificationFragment = new NotificationFragment();
+        replaceFragment(homeFragment);
         mainBottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch(menuItem.getItemId()) {
+                switch (menuItem.getItemId()) {
                     case R.id.bottomHome:
                         replaceFragment(homeFragment);
                         return true;
@@ -67,11 +69,12 @@ public class MainActivity extends AppCompatActivity {
         addPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent newPostIntent=new Intent(MainActivity.this,NewPostActivity.class);
+                Intent newPostIntent = new Intent(MainActivity.this, NewPostActivity.class);
                 startActivity(newPostIntent);
 
             }
         });
+    }
 
     }
 

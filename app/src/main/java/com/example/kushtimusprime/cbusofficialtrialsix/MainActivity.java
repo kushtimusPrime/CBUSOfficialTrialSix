@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         mainToolbar = (Toolbar) findViewById(R.id.mainToolbar);
         setSupportActionBar(mainToolbar);
         getSupportActionBar().setTitle("CBUS");
+        //starts user on homepage once logged in
         if (mAuth.getCurrentUser() != null){
         mainBottomNav = findViewById(R.id.mainBottomNav);
         addPostButton = (FloatingActionButton) findViewById(R.id.addPostButton);
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         accountFragment = new AccountFragment();
         notificationFragment = new NotificationFragment();
         replaceFragment(homeFragment);
+        //allows user to navigate between screens with menu on bottom
         mainBottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -78,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //checks to see if a user is already logged in and directs them accordingly
     @Override
     protected void onStart() {
         super.onStart();

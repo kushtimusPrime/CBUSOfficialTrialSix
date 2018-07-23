@@ -36,6 +36,7 @@ public class HomeFragment extends Fragment {
     private BlogRecyclerAdapter blogRecyclerAdapter;
     private FirebaseAuth firebaseAuth;
     private DocumentSnapshot lastVisible;
+    private Boolean isFirstPageFirstLoad=true;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -53,6 +54,7 @@ public class HomeFragment extends Fragment {
         blogPostView.setAdapter(blogRecyclerAdapter);
         if(firebaseAuth.getCurrentUser() != null){
         firebaseFirestore=FirebaseFirestore.getInstance();
+        //loads more posts once scrolled to bottom of homepage
         blogPostView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -66,18 +68,27 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        //sets the first five blog posts on homescreen
         Query firstQuery = firebaseFirestore.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING).limit(5);
-        firstQuery.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        firstQuery.addSnapshotListener(getActivity(),new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                lastVisible = documentSnapshots.getDocuments().get(documentSnapshots.size()-1);
+                if(isFirstPageFirstLoad) {
+                    lastVisible = documentSnapshots.getDocuments().get(documentSnapshots.size() - 1);
+                }
                 for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
                     if (doc.getType() == DocumentChange.Type.ADDED) {
                         BlogPost blogPost = doc.getDocument().toObject(BlogPost.class);
-                        blogPosts.add(blogPost);
+                        if(isFirstPageFirstLoad) {
+                            blogPosts.add(blogPost);
+                        } else {
+                            blogPosts.add(0,blogPost);
+                        }
                         blogRecyclerAdapter.notifyDataSetChanged();
                     }
                 }
+                isFirstPageFirstLoad=false;
+
             }
             });
         }
@@ -89,7 +100,7 @@ public class HomeFragment extends Fragment {
     //wants to see other ones?
     public void loadMorePosts(){
         Query nextQuery = firebaseFirestore.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING).startAfter(lastVisible).limit(5);
-        nextQuery.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        nextQuery.addSnapshotListener(getActivity(),new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                 if (!documentSnapshots.isEmpty()) {

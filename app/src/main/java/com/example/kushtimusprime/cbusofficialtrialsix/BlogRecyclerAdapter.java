@@ -38,6 +38,7 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
         return new ViewHolder(view);
     }
 
+    //sets the description, picture, and username of a blog post on the homescreen
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
         String descData=blogPostList.get(i).getDesc();
@@ -57,6 +58,7 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
                 }
             }
         });
+        //retrieves and formats the timestamp
         long millisecond = blogPostList.get(i).getTimestamp().getTime();
         String dateString = DateFormat.format( "MM/dd/yyyy", new Date(millisecond)).toString();
         viewHolder.setTime(dateString);
@@ -67,6 +69,7 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
         return blogPostList.size();
     }
 
+    //setter methods for all blog post components displayed on the homescreen
     public class ViewHolder extends RecyclerView.ViewHolder {
         private View mView;
         private TextView descView;

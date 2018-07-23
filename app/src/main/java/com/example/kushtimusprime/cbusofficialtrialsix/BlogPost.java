@@ -10,7 +10,7 @@ public class BlogPost {
     public String imageThumb;
     public Date timestamp;
 
-
+    //sets everything in the layout when viewing a blog post
     public BlogPost(String userID, String imageUri, String desc, String imageThumb, Date timestamp) {
         this.userID = userID;
         this.imageUri = imageUri;
@@ -18,10 +18,8 @@ public class BlogPost {
         this.imageThumb = imageThumb;
         this.timestamp = timestamp;
     }
-    public BlogPost() {
 
-    }
-
+    //getter and setter methods for all components of blog posts
     public String getUserID() {
         return userID;
     }

@@ -54,6 +54,7 @@ public class HomeFragment extends Fragment {
         blogPostView.setAdapter(blogRecyclerAdapter);
         if(firebaseAuth.getCurrentUser() != null){
         firebaseFirestore=FirebaseFirestore.getInstance();
+        //loads more posts once scrolled to bottom of homepage
         blogPostView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -67,6 +68,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        //sets the first five blog posts on homescreen
         Query firstQuery = firebaseFirestore.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING).limit(5);
         firstQuery.addSnapshotListener(getActivity(),new EventListener<QuerySnapshot>() {
             @Override

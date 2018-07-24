@@ -19,6 +19,10 @@ public class BlogPost {
         this.timestamp = timestamp;
     }
 
+    public BlogPost() {
+        //empty required public constructor
+    }
+
     //getter and setter methods for all components of blog posts
     public String getUserID() {
         return userID;

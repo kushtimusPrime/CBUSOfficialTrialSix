@@ -50,9 +50,8 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
-        final int position=i;
-        final String blogUserID=blogPostList.get(i).getUserID();
-        final String currentUserID=mAuth.getCurrentUser().getUid();
+        String blogUserID=blogPostList.get(i).getUserID();
+        String currentUserID=mAuth.getCurrentUser().getUid();
         final String blogPostID=blogPostList.get(i).getBlogID();
         String descData=blogPostList.get(i).getDesc();
         viewHolder.setDescText(descData);

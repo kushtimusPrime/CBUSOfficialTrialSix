@@ -3,10 +3,10 @@ package com.example.kushtimusprime.cbusofficialtrialsix;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -14,15 +14,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -33,9 +30,6 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 
 import id.zelory.compressor.Compressor;
@@ -110,13 +104,30 @@ public class NewPostActivity extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                         String downloadThumbUri = taskSnapshot.getDownloadUrl().toString();
-                                        Map<String, Object> postMap = new HashMap<>();
-                                        postMap.put("imageUri", downloadUri);
-                                        postMap.put("imageThumb", downloadThumbUri);
-                                        postMap.put("desc", desc);
-                                        postMap.put("userID", currentUserID);
-                                        postMap.put("timestamp", FieldValue.serverTimestamp());
-                                        firebaseFirestore.collection("Posts").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                        String blogID=firebaseFirestore.collection("Posts").document().getId();
+                                        final BlogPost blogPost=new BlogPost(currentUserID,downloadUri,downloadThumbUri,blogID,desc);
+                                        blogPost.setBlogID(blogID);
+                                        firebaseFirestore.collection("Posts").document(blogID).set(blogPost).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if(task.isSuccessful()) {
+                                                    if (task.isSuccessful()) {
+
+                                                        Toast.makeText(NewPostActivity.this, "Post was successful", Toast.LENGTH_LONG).show();
+
+                                                        Intent mainIntent = new Intent(NewPostActivity.this, MainActivity.class);
+                                                        startActivity(mainIntent);
+                                                        finish();
+
+                                                    } else {
+                                                        String errorMessage = task.getException().getMessage();
+                                                        Toast.makeText(NewPostActivity.this, "Error: " + errorMessage, Toast.LENGTH_LONG).show();
+                                                    }
+                                                    postProgressBar.setVisibility(View.INVISIBLE);
+                                                }
+                                            }
+                                        });
+                                       /* firebaseFirestore.collection("Posts").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                             @Override
                                             public void onComplete(@NonNull Task<DocumentReference> task) {
                                                 if (task.isSuccessful()) {
@@ -131,7 +142,7 @@ public class NewPostActivity extends AppCompatActivity {
                                                 }
                                                 postProgressBar.setVisibility(View.INVISIBLE);
                                             }
-                                        });
+                                        });*/
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override

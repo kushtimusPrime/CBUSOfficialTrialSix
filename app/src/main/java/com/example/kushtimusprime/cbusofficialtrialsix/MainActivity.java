@@ -1,5 +1,6 @@
 package com.example.kushtimusprime.cbusofficialtrialsix;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -21,16 +22,20 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
     private Toolbar mainToolbar;
     private FirebaseAuth mAuth;
     private FloatingActionButton addPostButton;
+    private FloatingActionButton refreshButton;
     private FirebaseFirestore firebaseFirestore;
     private String currentUserID;
     private BottomNavigationView mainBottomNav;
     private HomeFragment homeFragment;
     private NotificationFragment notificationFragment;
     private AccountFragment accountFragment;
+    private ArrayList<BlogPost> blogPosts=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         if (mAuth.getCurrentUser() != null){
         mainBottomNav = findViewById(R.id.mainBottomNav);
         addPostButton = (FloatingActionButton) findViewById(R.id.addPostButton);
+        refreshButton=findViewById(R.id.refreshButton);
         homeFragment = new HomeFragment();
         accountFragment = new AccountFragment();
         notificationFragment = new NotificationFragment();
@@ -54,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
                 switch (menuItem.getItemId()) {
                     case R.id.bottomHome:
                         replaceFragment(homeFragment);
+                        finish();
+                        startActivity(getIntent());
                         return true;
                     case R.id.bottomAccount:
                         replaceFragment(accountFragment);
@@ -72,6 +80,13 @@ public class MainActivity extends AppCompatActivity {
                 Intent newPostIntent = new Intent(MainActivity.this, NewPostActivity.class);
                 startActivity(newPostIntent);
 
+            }
+        });
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+                startActivity(getIntent());
             }
         });
     }
@@ -141,7 +156,22 @@ public class MainActivity extends AppCompatActivity {
     }
     private void replaceFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
+        if(fragment.equals(homeFragment)) {
+            makeButtonVisible();
+        } else {
+            makeButtonInvisible();
+        }
         fragmentTransaction.replace(R.id.mainContainer,fragment);
         fragmentTransaction.commit();
+    }
+
+    @SuppressLint("RestrictedApi")
+    private void makeButtonInvisible() {
+        refreshButton.setVisibility(View.GONE);
+    }
+
+    @SuppressLint("RestrictedApi")
+    private void makeButtonVisible() {
+        refreshButton.setVisibility(View.VISIBLE);
     }
 }

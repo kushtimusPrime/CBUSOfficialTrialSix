@@ -1,24 +1,21 @@
 package com.example.kushtimusprime.cbusofficialtrialsix;
 
-import java.sql.Timestamp;
-import java.util.Date;
-
 public class BlogPost {
-    public String userID;
-    public String imageUri;
-    public String desc;
-    public String imageThumb;
-    public Date timestamp;
+    private String userID;
+    private String imageUri;
+    private String thumbUri;
+    private String blogID;
+    private String desc;
 
+    public BlogPost() {
+    }
 
-    public BlogPost(String userID, String imageUri, String desc, String imageThumb, Date timestamp) {
+    public BlogPost(String userID, String imageUri, String thumbUri, String blogID, String desc) {
         this.userID = userID;
         this.imageUri = imageUri;
+        this.thumbUri = thumbUri;
+        this.blogID = blogID;
         this.desc = desc;
-        this.imageThumb = imageThumb;
-        this.timestamp = timestamp;
-    }
-    public BlogPost() {
 
     }
 
@@ -38,28 +35,28 @@ public class BlogPost {
         this.imageUri = imageUri;
     }
 
+    public String getThumbUri() {
+        return thumbUri;
+    }
+
+    public void setThumbUri(String thumbUri) {
+        this.thumbUri = thumbUri;
+    }
+
+    public String getBlogID() {
+        return blogID;
+    }
+
+    public void setBlogID(String blogID) {
+        this.blogID = blogID;
+    }
+
     public String getDesc() {
         return desc;
     }
 
     public void setDesc(String desc) {
         this.desc = desc;
-    }
-
-    public String getImageThumb() {
-        return imageThumb;
-    }
-
-    public void setImageThumb(String imageThumb) {
-        this.imageThumb = imageThumb;
-    }
-
-    public Date getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
     }
 
 

@@ -96,7 +96,7 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()) {
-                            Toast.makeText(context,"Success",Toast.LENGTH_LONG).show();
+                            Toast.makeText(context,"Post is deleted. Please refresh screen",Toast.LENGTH_LONG).show();
                                 Set<BlogPost> hs = new HashSet<>();
                                 hs.addAll(blogPostList);
                                 blogPostList.clear();

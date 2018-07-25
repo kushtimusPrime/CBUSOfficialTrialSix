@@ -30,12 +30,20 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth mAuth;
     private ViewGroup viewGroup;
+    private static int blogPostListPastSize=0;
     public BlogRecyclerAdapter(List<BlogPost> blogPostLists) {
         Set<BlogPost> hs = new HashSet<>();
         hs.addAll(blogPostLists);
         blogPostLists.clear();
         blogPostLists.addAll(hs);
         this.blogPostList=blogPostLists;
+       /* if(blogPostLists.size()!=blogPostListPastSize) {
+            Context context= viewGroup.getContext();
+            Activity activity=(Activity)context;
+            blogPostListPastSize=blogPostList.size();
+            activity.finish();
+            activity.startActivity(new Intent(context,MainActivity.class));
+        }*/
     }
     @NonNull
     @Override
@@ -61,6 +69,9 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
         if(blogUserID.equals(currentUserID)) {
             viewHolder.deleteButton.setEnabled(true);
             viewHolder.deleteButton.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.deleteButton.setEnabled(false);
+            viewHolder.deleteButton.setVisibility(View.GONE);
         }
         String userID = blogPostList.get(i).getUserID();
         firebaseFirestore.collection("Users").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

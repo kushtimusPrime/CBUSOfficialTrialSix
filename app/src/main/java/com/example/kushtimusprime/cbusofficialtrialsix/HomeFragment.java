@@ -120,9 +120,6 @@ public class HomeFragment extends Fragment {
             }
             });
         }
-        for(int a=0;a<blogPosts.size();a++) {
-            System.out.println(blogPosts.get(a));
-        }
         // Inflate the layout for this fragment
         return view;
     }

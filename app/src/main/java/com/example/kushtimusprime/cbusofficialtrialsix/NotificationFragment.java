@@ -96,7 +96,6 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
         mGoogleMap.setInfoWindowAdapter(customInfoWindow);
         Marker mel = mGoogleMap.addMarker(markerOptions);
         mel.setTag(info);
-        mel.showInfoWindow();
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(columbus,cityLevel));
         addressButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,7 +105,16 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
                     ArrayList<Double> points=getLocationFromAddress(address);
                     try {
                         LatLng marker = new LatLng(points.get(0), points.get(1));
-                        googleMap.addMarker(new MarkerOptions().position(marker).title("Marker is placed"));
+                        InfoWindowData newInfo = new InfoWindowData();
+                        newInfo.setImage("puppyforapp.jpg"); //idk if it can find this image? this is just the example
+                        newInfo.setDateOfEvent("I am here every day"); //hotel and food were the defaults it gave but we can change
+                        newInfo.setTickets("No tickets available");
+                        newInfo.setTransport("Reach the site by bus, car and train.");
+                        CustomInfoWindow customInfoWindow = new CustomInfoWindow(getActivity());
+                        mGoogleMap.setInfoWindowAdapter(customInfoWindow);
+                        Marker newMarker= googleMap.addMarker(new MarkerOptions().position(marker).title("Deep dish Thursday").snippet("Secret in the sauce")
+                                .icon(BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_AZURE)));
+                        newMarker.setTag(newInfo);
                         float zoomLevel = 16.0f; //This goes up to 21
                         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker, zoomLevel));
                         // mMap.moveCamera(CameraUpdateFactory.newLatLng(marker));

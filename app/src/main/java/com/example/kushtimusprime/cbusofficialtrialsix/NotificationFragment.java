@@ -87,16 +87,16 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
                 .title("Mel's House")
                 .snippet("This is where I live")
                 .icon(BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE));
-      /*  InfoWindowData info = new InfoWindowData();
+      InfoWindowData info = new InfoWindowData();
         info.setImage("puppyforapp.jpg"); //idk if it can find this image? this is just the example
         info.setDateOfEvent("I am here every day"); //hotel and food were the defaults it gave but we can change
         info.setTickets("No tickets available");
         info.setTransport("Reach the site by bus, car and train.");
         CustomInfoWindow customInfoWindow = new CustomInfoWindow(this.getActivity());
-        mGoogleMap.setInfoWindowAdapter(customInfoWindow);*/
+        mGoogleMap.setInfoWindowAdapter(customInfoWindow);
         Marker mel = mGoogleMap.addMarker(markerOptions);
-       // mel.setTag(info);
-        //mel.showInfoWindow();
+        mel.setTag(info);
+        mel.showInfoWindow();
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(columbus,cityLevel));
         addressButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,7 +131,7 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
                 googleMap.moveCamera(CameraUpdateFactory.zoomOut());
             }
         });
-       /* mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+       mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 if (lastMarker == null) {
@@ -163,7 +163,7 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
                 }
                 return true;
             }
-        });*/
+        });
     }
     public ArrayList getLocationFromAddress(String strAddress){
 

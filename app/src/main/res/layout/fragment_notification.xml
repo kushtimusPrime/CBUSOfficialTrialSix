@@ -6,11 +6,9 @@
     tools:context=".NotificationFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/bottomNotification"
+    <com.google.android.gms.maps.MapView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Notification Fragment"
-        android:textSize="30sp" />
+        android:id="@+id/map" />
 
 </FrameLayout>

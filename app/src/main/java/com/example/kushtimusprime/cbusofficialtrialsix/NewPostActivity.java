@@ -15,6 +15,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -23,6 +26,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -100,17 +104,22 @@ public class NewPostActivity extends AppCompatActivity {
                                 compressedImageFile.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                                 byte[] thumbData = baos.toByteArray();
                                 UploadTask uploadTask = storageReference.child("Post Images/Thumbnails").child(randomName + ".jpg").putBytes(thumbData);
-                                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                StorageTask<UploadTask.TaskSnapshot> taskSnapshotStorageTask = uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                     @Override
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                         String downloadThumbUri = taskSnapshot.getDownloadUrl().toString();
-                                        String blogID=firebaseFirestore.collection("Posts").document().getId();
-                                        final BlogPost blogPost=new BlogPost(currentUserID,downloadUri,downloadThumbUri,blogID,desc);
+                                        String blogID = firebaseFirestore.collection("Posts").document().getId();
+                                        String date="4/20";
+                                        String tickets="Every day";
+                                        String transportation="Driving people";
+                                        LatLng location=new LatLng(1.0,1.0);
+                                        String title="Stupid heads are stupid";
+                                        final BlogPost blogPost = new BlogPost(currentUserID, downloadUri, downloadThumbUri, blogID, desc,date,tickets,transportation,location,title);
                                         blogPost.setBlogID(blogID);
                                         firebaseFirestore.collection("Posts").document(blogID).set(blogPost).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
-                                                if(task.isSuccessful()) {
+                                                if (task.isSuccessful()) {
                                                     if (task.isSuccessful()) {
 
                                                         Toast.makeText(NewPostActivity.this, "Post was successful", Toast.LENGTH_LONG).show();

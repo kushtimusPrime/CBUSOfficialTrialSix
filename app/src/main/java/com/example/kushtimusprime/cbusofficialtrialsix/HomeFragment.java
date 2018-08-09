@@ -44,7 +44,6 @@ public class HomeFragment extends Fragment {
 
     private DocumentSnapshot lastVisible;
     private Boolean isFirstPageFirstLoad = true;
-    private BlogPost blogPost=new BlogPost();
 
     public HomeFragment() {
         // Required empty public constructor
@@ -92,17 +91,19 @@ public class HomeFragment extends Fragment {
                             documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                 @Override
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                    blogPost = documentSnapshot.toObject(BlogPost.class);
-                                    if (isFirstPageFirstLoad) {
-                                        if (!blogPosts.contains(blogPost)) {
-                                            blogPosts.add(blogPost);
+                                    if(documentSnapshot.exists()) {
+                                        BlogPost blogPost = documentSnapshot.toObject(BlogPost.class);
+                                        if (isFirstPageFirstLoad) {
+                                            if (!blogPosts.contains(blogPost)) {
+                                                blogPosts.add(blogPost);
+                                            }
+                                        } else {
+                                            if (!blogPosts.contains(blogPost)) {
+                                                blogPosts.add(0, blogPost);
+                                            }
                                         }
-                                    } else {
-                                        if (!blogPosts.contains(blogPost)) {
-                                            blogPosts.add(0, blogPost);
-                                        }
+                                        blogRecyclerAdapter.notifyDataSetChanged();
                                     }
-                                    blogRecyclerAdapter.notifyDataSetChanged();
 
                                 }
                             });

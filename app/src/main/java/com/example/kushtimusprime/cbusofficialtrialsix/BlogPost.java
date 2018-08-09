@@ -12,13 +12,14 @@ public class BlogPost {
     private String date;
     private String tickets;
     private String transportation;
-    private LatLng location;
+    private String latitude;
+    private String longitude;
     private String title;
 
     public BlogPost() {
     }
 
-    public BlogPost(String userID, String imageUri, String thumbUri, String blogID, String desc, String date, String tickets, String transportation, LatLng location, String title) {
+    public BlogPost(String userID, String imageUri, String thumbUri, String blogID, String desc, String date, String tickets, String transportation, String latitude, String longitude, String title) {
         this.userID = userID;
         this.imageUri = imageUri;
         this.thumbUri = thumbUri;
@@ -27,7 +28,8 @@ public class BlogPost {
         this.date = date;
         this.tickets = tickets;
         this.transportation = transportation;
-        this.location = location;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.title = title;
     }
 
@@ -95,12 +97,20 @@ public class BlogPost {
         this.transportation = transportation;
     }
 
-    public LatLng getLocation() {
-        return location;
+    public String getLatitude() {
+        return latitude;
     }
 
-    public void setLocation(LatLng location) {
-        this.location = location;
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
     }
 
     public String getTitle() {
@@ -110,6 +120,4 @@ public class BlogPost {
     public void setTitle(String title) {
         this.title = title;
     }
-
-
 }

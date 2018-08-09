@@ -112,9 +112,10 @@ public class NewPostActivity extends AppCompatActivity {
                                         String date="4/20";
                                         String tickets="Every day";
                                         String transportation="Driving people";
-                                        LatLng location=new LatLng(1.0,1.0);
+                                        String latitude="1.0";
+                                        String longitude="2.0";
                                         String title="Stupid heads are stupid";
-                                        final BlogPost blogPost = new BlogPost(currentUserID, downloadUri, downloadThumbUri, blogID, desc,date,tickets,transportation,location,title);
+                                        final BlogPost blogPost = new BlogPost(currentUserID, downloadUri, downloadThumbUri, blogID, desc,date,tickets,transportation,latitude,longitude,title);
                                         blogPost.setBlogID(blogID);
                                         firebaseFirestore.collection("Posts").document(blogID).set(blogPost).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override

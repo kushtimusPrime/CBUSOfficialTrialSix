@@ -27,12 +27,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/newPostToolbar"
         app:srcCompat="@drawable/post_placeholder"
-        android:contentDescription="TODO" />
+        android:contentDescription="@string/todo" />
 
     <EditText
         android:id="@+id/newPostDescription"
         android:layout_width="0dp"
         android:layout_height="55dp"
+        android:layout_marginBottom="1dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
@@ -44,6 +45,7 @@
         android:maxLength="150"
         android:padding="16dp"
         android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/eventTicketLink"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/newPostImage" />
@@ -80,7 +82,7 @@
         app:layout_constraintTop_toBottomOf="@+id/newPostToolbar" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/eventName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="463dp"
@@ -88,7 +90,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="2dp"
         android:ems="10"
-        android:hint="Event Name"
+        android:hint="@string/event_name"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -106,7 +108,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="1dp"
         android:ems="10"
-        android:hint="Ticket link"
+        android:hint="@string/ticket_link"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toTopOf="@+id/postButton"
         app:layout_constraintEnd_toEndOf="parent"
@@ -114,7 +116,7 @@
         app:layout_constraintTop_toBottomOf="@+id/newPostDescription" />
 
     <EditText
-        android:id="@+id/editText3"
+        android:id="@+id/eventAddress"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
@@ -124,7 +126,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="12dp"
         android:ems="10"
-        android:hint="Address"
+        android:hint="@string/address"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toTopOf="@+id/postButton"
         app:layout_constraintEnd_toEndOf="parent"

@@ -144,6 +144,7 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
                 .icon(BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE));
       InfoWindowData info = new InfoWindowData();
         //info.setImage("puppyforapp.jpg"); //idk if it can find this image? this is just the example
+        //hgds
         info.setDateOfEvent("I am here every day"); //hotel and food were the defaults it gave but we can change
         info.setTickets("No tickets available");
         info.setTransport("Reach the site by bus, car and train.");

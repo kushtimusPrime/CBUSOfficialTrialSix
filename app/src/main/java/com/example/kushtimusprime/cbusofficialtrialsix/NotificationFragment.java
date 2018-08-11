@@ -25,6 +25,16 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +54,8 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
     private ImageButton zoomOutButton;
     private boolean infoWindowIsShow = false;
     private Marker lastMarker;
+    private FirebaseFirestore firebaseFirestore;
+    private FirebaseAuth firebaseAuth;
 
     public NotificationFragment() {
         // Required empty public constructor
@@ -71,6 +83,49 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
             mMapView.onResume();
             mMapView.getMapAsync(this);
         }
+        firebaseAuth=FirebaseAuth.getInstance();
+        if(firebaseAuth!=null) {
+            firebaseFirestore = FirebaseFirestore.getInstance();
+        }
+        Query realQuery=firebaseFirestore.collection("Posts").orderBy("blogID", Query.Direction.DESCENDING);
+        realQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                try {
+                    for(DocumentChange doc:documentSnapshots.getDocumentChanges()) {
+                        if(doc.getType()==DocumentChange.Type.ADDED) {
+                            DocumentReference documentReference = doc.getDocument().getReference();
+                            documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    if(documentSnapshot.exists()) {
+                                        BlogPost blogPost = documentSnapshot.toObject(BlogPost.class);
+                                        double latitude=Double.parseDouble(blogPost.getLatitude());
+                                        double longitude=Double.parseDouble(blogPost.getLongitude());
+                                        LatLng cbus=new LatLng(latitude,longitude);
+                                        InfoWindowData newInfo = new InfoWindowData();
+                                        newInfo.setDateOfEvent(blogPost.getDate()); //hotel and food were the defaults it gave but we can change
+                                        newInfo.setTickets(blogPost.getTickets());
+                                        newInfo.setTransport(blogPost.getTransportation());
+                                        CustomInfoWindow customInfoWindow = new CustomInfoWindow(getActivity(),blogPost.getImageUri(),blogPost.getThumbUri());
+                                        mGoogleMap.setInfoWindowAdapter(customInfoWindow);
+                                        Marker newMarker= mGoogleMap.addMarker(new MarkerOptions().position(cbus).title(blogPost.getTitle()).snippet(blogPost.getDesc())
+                                                .icon(BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_AZURE)));
+                                        newMarker.setTag(newInfo);
+
+                                        if(newMarker.isVisible()==true) {
+                                            Toast.makeText(getContext(),"Marker is visible",Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }catch (Exception exception) {
+
+                }
+            }
+        });
     }
 
     @Override
@@ -88,7 +143,7 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
                 .snippet("This is where I live")
                 .icon(BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE));
       InfoWindowData info = new InfoWindowData();
-        info.setImage("puppyforapp.jpg"); //idk if it can find this image? this is just the example
+        //info.setImage("puppyforapp.jpg"); //idk if it can find this image? this is just the example
         info.setDateOfEvent("I am here every day"); //hotel and food were the defaults it gave but we can change
         info.setTickets("No tickets available");
         info.setTransport("Reach the site by bus, car and train.");

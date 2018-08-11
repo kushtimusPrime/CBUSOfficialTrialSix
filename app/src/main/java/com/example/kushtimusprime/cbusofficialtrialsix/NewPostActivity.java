@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -112,8 +113,8 @@ public class NewPostActivity extends AppCompatActivity {
                                         String date="4/20";
                                         String tickets="Every day";
                                         String transportation="Driving people";
-                                        String latitude="1.0";
-                                        String longitude="2.0";
+                                        String latitude="40.0";
+                                        String longitude="83.0";
                                         String title="Stupid heads are stupid";
                                         final BlogPost blogPost = new BlogPost(currentUserID, downloadUri, downloadThumbUri, blogID, desc,date,tickets,transportation,latitude,longitude,title);
                                         blogPost.setBlogID(blogID);
@@ -122,13 +123,10 @@ public class NewPostActivity extends AppCompatActivity {
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
                                                     if (task.isSuccessful()) {
-
                                                         Toast.makeText(NewPostActivity.this, "Post was successful", Toast.LENGTH_LONG).show();
-
                                                         Intent mainIntent = new Intent(NewPostActivity.this, MainActivity.class);
                                                         startActivity(mainIntent);
                                                         finish();
-
                                                     } else {
                                                         String errorMessage = task.getException().getMessage();
                                                         Toast.makeText(NewPostActivity.this, "Error: " + errorMessage, Toast.LENGTH_LONG).show();

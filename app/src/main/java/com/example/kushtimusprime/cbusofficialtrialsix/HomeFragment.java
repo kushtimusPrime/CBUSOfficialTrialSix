@@ -73,7 +73,6 @@ public class HomeFragment extends Fragment {
                     }
                 }
             });
-
         Query firstQuery = firebaseFirestore.collection("Posts").orderBy("blogID", Query.Direction.DESCENDING).limit(5);
         firstQuery.addSnapshotListener(getActivity(),new EventListener<QuerySnapshot>() {
             @Override

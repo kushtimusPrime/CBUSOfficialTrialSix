@@ -43,6 +43,10 @@ public class NewPostActivity extends AppCompatActivity {
     private android.support.v7.widget.Toolbar newPostToolbar;
     private ImageView newPostImage;
     private EditText newPostDescription;
+    private EditText eventName;
+    private EditText eventTicketLink;
+    private EditText eventAddress;
+    private EditText eventDate;
     private Button postButton;
     private Uri postImageUri=null;
     private ProgressBar postProgressBar;
@@ -62,6 +66,10 @@ public class NewPostActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         newPostImage=(ImageView)findViewById(R.id.newPostImage);
         newPostDescription=(EditText)findViewById(R.id.newPostDescription);
+        eventName=(EditText)findViewById(R.id.eventName);
+        eventTicketLink=(EditText)findViewById(R.id.eventTicketLink);
+        eventAddress=(EditText)findViewById(R.id.eventAddress);
+        eventDate =(EditText)findViewById(R.id.eventDate);
         postButton=(Button)findViewById(R.id.postButton);
         storageReference=FirebaseStorage.getInstance().getReference();
         firebaseFirestore=FirebaseFirestore.getInstance();
@@ -81,7 +89,12 @@ public class NewPostActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 final String desc=newPostDescription.getText().toString();
-                if(!TextUtils.isEmpty(desc)&&postImageUri!=null) {
+                final String name=eventName.getText().toString();
+                final String ticket=eventTicketLink.getText().toString();
+                final String address=eventAddress.getText().toString();
+                final String date=eventDate.getText().toString();
+
+                if(!TextUtils.isEmpty(desc)&&postImageUri!=null&&!TextUtils.isEmpty(name)&&!TextUtils.isEmpty(ticket)&&!TextUtils.isEmpty(address)&&!TextUtils.isEmpty(date)) {
                     postProgressBar.setVisibility(View.VISIBLE);
                     final String randomName= UUID.randomUUID().toString();
                     StorageReference filePath=storageReference.child("Post Images").child(randomName+".jpg");
@@ -110,13 +123,11 @@ public class NewPostActivity extends AppCompatActivity {
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                         String downloadThumbUri = taskSnapshot.getDownloadUrl().toString();
                                         String blogID = firebaseFirestore.collection("Posts").document().getId();
-                                        String date="4/20";
-                                        String tickets="Every day";
-                                        String transportation="Driving people";
-                                        String latitude="40.0";
-                                        String longitude="83.0";
-                                        String title="Stupid heads are stupid";
-                                        final BlogPost blogPost = new BlogPost(currentUserID, downloadUri, downloadThumbUri, blogID, desc,date,tickets,transportation,latitude,longitude,title);
+                                        String theDate=date;
+                                        String tickets=ticket;
+                                        String theAddress=address;
+                                        String title=name;
+                                        final BlogPost blogPost = new BlogPost(currentUserID, downloadUri, downloadThumbUri, blogID, desc,date,tickets,address,title);
                                         blogPost.setBlogID(blogID);
                                         firebaseFirestore.collection("Posts").document(blogID).set(blogPost).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override

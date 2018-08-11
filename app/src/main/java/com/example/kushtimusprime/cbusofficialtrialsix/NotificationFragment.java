@@ -36,6 +36,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -100,21 +101,23 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                                     if(documentSnapshot.exists()) {
                                         BlogPost blogPost = documentSnapshot.toObject(BlogPost.class);
-                                        double latitude=Double.parseDouble(blogPost.getLatitude());
-                                        double longitude=Double.parseDouble(blogPost.getLongitude());
-                                        LatLng cbus=new LatLng(latitude,longitude);
-                                        InfoWindowData newInfo = new InfoWindowData();
-                                        newInfo.setDateOfEvent(blogPost.getDate()); //hotel and food were the defaults it gave but we can change
-                                        newInfo.setTickets(blogPost.getTickets());
-                                        newInfo.setTransport(blogPost.getTransportation());
-                                        CustomInfoWindow customInfoWindow = new CustomInfoWindow(getActivity(),blogPost.getImageUri(),blogPost.getThumbUri());
-                                        mGoogleMap.setInfoWindowAdapter(customInfoWindow);
-                                        Marker newMarker= mGoogleMap.addMarker(new MarkerOptions().position(cbus).title(blogPost.getTitle()).snippet(blogPost.getDesc())
-                                                .icon(BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_AZURE)));
-                                        newMarker.setTag(newInfo);
+                                        ArrayList<Double> points=getLocationFromAddress(blogPost.getAddress());
+                                        try {
+                                            LatLng marker = new LatLng(points.get(0), points.get(1));
+                                            InfoWindowData newInfo = new InfoWindowData();
+                                            newInfo.setDateOfEvent(blogPost.getDate()); //hotel and food were the defaults it gave but we can change
+                                            newInfo.setTickets(blogPost.getTickets());
+                                            CustomInfoWindow customInfoWindow = new CustomInfoWindow(getActivity());
+                                            mGoogleMap.setInfoWindowAdapter(customInfoWindow);
+                                            Marker newMarker= mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
+                                                    .icon(BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_AZURE)));
+                                            newMarker.setTag(newInfo);
+                                            float zoomLevel = 16.0f; //This goes up to 21
+                                            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker, zoomLevel));
+                                            // mMap.moveCamera(CameraUpdateFactory.newLatLng(marker));
+                                        } catch (NullPointerException e) {
+                                            Toast.makeText(getContext(),"Please type a REAL address",Toast.LENGTH_LONG).show();
 
-                                        if(newMarker.isVisible()==true) {
-                                            Toast.makeText(getContext(),"Marker is visible",Toast.LENGTH_LONG).show();
                                         }
                                     }
                                 }

@@ -77,8 +77,8 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mMapView=(MapView)mView.findViewById(R.id.map);
-        addressEditText=mView.findViewById(R.id.addressEditText);
-        addressButton=mView.findViewById(R.id.addressButton);
+       // addressEditText=mView.findViewById(R.id.addressEditText);
+        //addressButton=mView.findViewById(R.id.addressButton);
         zoomInButton=mView.findViewById(R.id.zoomInButton);
         zoomOutButton=mView.findViewById(R.id.zoomOutButton);
         if(mMapView!=null) {
@@ -143,7 +143,7 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
         float cityLevel=12.0f;
         LatLng columbus=new LatLng(39.9612,-82.9988);
         //info window tester stuff
-        LatLng melsHouse = new LatLng(40.057613, -83.082275);
+       /* LatLng melsHouse = new LatLng(40.057613, -83.082275);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(melsHouse)
                 .title("Mel's House")
@@ -158,9 +158,9 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
         CustomInfoWindow customInfoWindow = new CustomInfoWindow(this.getActivity());
         mGoogleMap.setInfoWindowAdapter(customInfoWindow);
         Marker mel = mGoogleMap.addMarker(markerOptions);
-        mel.setTag(info);
+        mel.setTag(info);*/
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(columbus,cityLevel));
-        addressButton.setOnClickListener(new View.OnClickListener() {
+       /* addressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(!TextUtils.isEmpty(addressEditText.getText().toString())) {
@@ -189,7 +189,7 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
                     Toast.makeText(getContext(),"Please type an address",Toast.LENGTH_LONG).show();
                 }
             }
-        });
+        });*/
         zoomInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

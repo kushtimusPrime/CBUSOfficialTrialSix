@@ -2,15 +2,20 @@ package com.example.kushtimusprime.cbusofficialtrialsix;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
 
@@ -40,10 +45,24 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
 
         name_tv.setText(marker.getTitle());
         details_tv.setText(marker.getSnippet());
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions.placeholder(R.drawable.image_placeholder);
-        Glide.with(context).applyDefaultRequestOptions(requestOptions).load(classBigUri).thumbnail(Glide.with(context).load(classImageUri)).into(img);
 
+      /*  try {
+            Glide.with(context).load(new URL(classBigUri)).asBitmap().override(50,50).listener(new RequestListener<String, Bitmap>() {
+                @Override
+                public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
+                    e.printStackTrace();
+                    return false;
+                }
+
+                @Override
+                public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                    if(!isFromMemoryCache) marker.showInfoWindow();
+                    return false;
+                }
+            }).into(imageView);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }*/
         InfoWindowData infoWindowData = (InfoWindowData) marker.getTag();
         dateOfEvent_tv.setText(infoWindowData.getDateOfEvent());
         tickets_tv.setText(infoWindowData.getTickets());

@@ -1,6 +1,7 @@
 package com.example.kushtimusprime.cbusofficialtrialsix;
 
 
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -57,6 +58,7 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
     private Marker lastMarker;
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth firebaseAuth;
+    private ArrayList<BlogPost> blogPostList=new ArrayList<BlogPost>();
 
     public NotificationFragment() {
         // Required empty public constructor
@@ -101,22 +103,24 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                                     if(documentSnapshot.exists()) {
                                         BlogPost blogPost = documentSnapshot.toObject(BlogPost.class);
+                                        if(!blogPostList.contains(blogPost)) {
+                                            blogPostList.add(blogPost);
+                                        }
                                         ArrayList<Double> points=getLocationFromAddress(blogPost.getAddress());
                                         try {
                                             LatLng marker = new LatLng(points.get(0), points.get(1));
                                             InfoWindowData newInfo = new InfoWindowData();
                                             newInfo.setDateOfEvent(blogPost.getDate()); //hotel and food were the defaults it gave but we can change
                                             newInfo.setTickets(blogPost.getTickets());
-                                            CustomInfoWindow customInfoWindow = new CustomInfoWindow(getActivity());
+                                            CustomInfoWindow customInfoWindow = new CustomInfoWindow(getActivity(),blogPost.getImageUri(),blogPost.getThumbUri());
                                             mGoogleMap.setInfoWindowAdapter(customInfoWindow);
                                             Marker newMarker= mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
                                                     .icon(BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_AZURE)));
                                             newMarker.setTag(newInfo);
                                             float zoomLevel = 16.0f; //This goes up to 21
-                                            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker, zoomLevel));
                                             // mMap.moveCamera(CameraUpdateFactory.newLatLng(marker));
                                         } catch (NullPointerException e) {
-                                            Toast.makeText(getContext(),"Please type a REAL address",Toast.LENGTH_LONG).show();
+                                           // Toast.makeText(getContext(),"Please type a REAL address",Toast.LENGTH_LONG).show();
 
                                         }
                                     }
@@ -231,6 +235,24 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
                 return true;
             }
         });
+       mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+           @Override
+           public void onInfoWindowClick(Marker marker) {
+               for(int a=0;a<blogPostList.size();a++) {
+                   if(marker.getTitle().equals(blogPostList.get(a).getTitle())) {
+                       Intent expandIntent=new Intent(getActivity(),PinExpandedActivity.class);
+                       expandIntent.putExtra("title", blogPostList.get(a).getTitle());
+                       expandIntent.putExtra("description",blogPostList.get(a).getDesc());
+                       expandIntent.putExtra("date",blogPostList.get(a).getDate());
+                       expandIntent.putExtra("tickets",blogPostList.get(a).getTickets());
+                       expandIntent.putExtra("address",blogPostList.get(a).getAddress());
+                       expandIntent.putExtra("imageUri",blogPostList.get(a).getImageUri());
+                       expandIntent.putExtra("thumbUri",blogPostList.get(a).getThumbUri());
+                       startActivity(expandIntent);
+                   }
+               }
+           }
+       });
     }
     public ArrayList getLocationFromAddress(String strAddress){
 

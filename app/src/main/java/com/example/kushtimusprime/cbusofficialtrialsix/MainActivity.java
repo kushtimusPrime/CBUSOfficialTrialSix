@@ -54,17 +54,17 @@ public class MainActivity extends AppCompatActivity {
         homeFragment = new HomeFragment();
         accountFragment = new AccountFragment();
         notificationFragment = new NotificationFragment();
-        replaceFragment(homeFragment);
+        replaceFragment(notificationFragment);
         //allows user to navigate between screens with menu on bottom
         mainBottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
-                    case R.id.bottomHome:
+                   /* case R.id.bottomHome:
                         replaceFragment(homeFragment);
                         finish();
                         startActivity(getIntent());
-                        return true;
+                        return true;*/
                     case R.id.bottomAccount:
                         replaceFragment(accountFragment);
                         return true;

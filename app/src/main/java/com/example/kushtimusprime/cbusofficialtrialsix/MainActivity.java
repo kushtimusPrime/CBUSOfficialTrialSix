@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         replaceFragment(notificationFragment);
         //allows user to navigate between screens with menu on bottom
         mainBottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @SuppressLint("RestrictedApi")
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
@@ -67,9 +68,11 @@ public class MainActivity extends AppCompatActivity {
                         return true;*/
                     case R.id.bottomAccount:
                         replaceFragment(accountFragment);
+                        addPostButton.setVisibility(View.GONE);
                         return true;
                     case R.id.bottomNotification:
                         replaceFragment(notificationFragment);
+                        addPostButton.setVisibility(View.VISIBLE);
                         return true;
                     default:
                         return false;

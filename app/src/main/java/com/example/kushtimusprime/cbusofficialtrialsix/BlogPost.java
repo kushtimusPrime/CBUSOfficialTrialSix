@@ -1,7 +1,11 @@
 package com.example.kushtimusprime.cbusofficialtrialsix;
 
+import android.widget.Toast;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+
+import java.util.Date;
 
 public class BlogPost {
     private String userID;
@@ -27,6 +31,7 @@ public class BlogPost {
         this.tickets = tickets;
         this.address = address;
         this.title = title;
+       // convertToDate(date);
     }
 
     public String getUserID() {
@@ -99,5 +104,18 @@ public class BlogPost {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Date convertToDate(String theDate) {
+        String month=theDate.substring(0,2);
+        String day=theDate.substring(3,5);
+        String year=theDate.substring(6);
+        int theMonth=Integer.parseInt(month)-1;
+        int theDay=Integer.parseInt(day);
+        int theYear=Integer.parseInt(year)-1900;
+        if(theMonth>=0&&theMonth<=11&&theDay>=1&&theDay<=31) {
+            return(new Date(theYear, theMonth, theDay));
+        }
+        return null;
     }
 }

@@ -1,16 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AccountFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/bottomAccount"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Account Fragment"
-        android:textSize="36sp" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/select_interests"
+        android:textSize="40sp" />
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="178dp"
+        android:layout_height="31dp"
+        android:layout_marginBottom="21dp"
+        android:layout_marginEnd="274dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="274dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="22dp"
+        android:onClick="onChecked"
+        android:text="@string/sports"
+        app:layout_constraintBottom_toTopOf="@+id/checkBox2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <CheckBox
+        android:id="@+id/checkBox2"
+        android:layout_width="178dp"
+        android:layout_height="34dp"
+        android:layout_marginBottom="410dp"
+        android:layout_marginEnd="274dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="274dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="15dp"
+        android:onClick="onChecked"
+        android:text="@string/music_theater"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/checkBox" />
+
+    <CheckBox
+        android:id="@+id/checkBox3"
+        android:layout_width="178dp"
+        android:layout_height="34dp"
+        android:layout_marginBottom="318dp"
+        android:layout_marginEnd="190dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="190dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="15dp"
+        android:onClick="onChecked"
+        android:text="@string/visual_art"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/checkBox2" />
+
+    <CheckBox
+        android:id="@+id/checkBox4"
+        android:layout_width="178dp"
+        android:layout_height="32dp"
+        android:layout_marginBottom="268dp"
+        android:layout_marginEnd="190dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="190dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="34dp"
+        android:onClick="onChecked"
+        android:text="@string/dining"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/checkBox3" />
+
+    <CheckBox
+        android:id="@+id/checkBox5"
+        android:layout_width="176dp"
+        android:layout_height="36dp"
+        android:layout_marginBottom="198dp"
+        android:layout_marginEnd="192dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="192dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="34dp"
+        android:onClick="onChecked"
+        android:text="@string/academia"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/checkBox4" />
+
+</android.support.constraint.ConstraintLayout>

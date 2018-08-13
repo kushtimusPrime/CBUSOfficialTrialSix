@@ -40,7 +40,7 @@
         android:layout_marginStart="8dp"
         android:backgroundTint="@color/colorAccent"
         android:padding="16dp"
-        android:text="@string/addNewPost"
+        android:text="@string/post_pin"
         android:textAllCaps="false"
         android:textColor="@android:color/white"
         android:textSize="18sp"

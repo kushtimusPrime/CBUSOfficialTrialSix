@@ -40,10 +40,10 @@
     <string name="add_description">Add description</string>
     <string name="date_mm_dd_yyyy">Date (MM/DD/YYYY)</string>
     <string-array name="categories">
-        <item>Sports</item>
-        <item>Music/Theater</item>
-        <item>Visual Art</item>
-        <item>Dining</item>
-        <item>Academia</item>
+        <item>sports</item>
+        <item>music</item>
+        <item>art</item>
+        <item>food</item>
+        <item>academia</item>
     </string-array>
 </resources>

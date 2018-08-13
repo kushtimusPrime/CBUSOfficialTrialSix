@@ -123,7 +123,7 @@ public class NewPostActivity extends AppCompatActivity {
                 final String ticket=eventTicketLink.getText().toString();
                 final String address=eventAddress.getText().toString();
                 final String date=eventDate.getText().toString();
-                final String category=(String)item;
+                final String theCategory=(String)item;
 
                 if(!TextUtils.isEmpty(desc)&&postImageUri!=null&&!TextUtils.isEmpty(name)&&!TextUtils.isEmpty(ticket)&&!TextUtils.isEmpty(address)&&!TextUtils.isEmpty(date)) {
                     postProgressBar.setVisibility(View.VISIBLE);
@@ -158,7 +158,7 @@ public class NewPostActivity extends AppCompatActivity {
                                         String tickets=ticket;
                                         String theAddress=address;
                                         String title=name;
-                                        final BlogPost blogPost = new BlogPost(currentUserID, downloadUri, downloadThumbUri, blogID, desc,date,tickets,address,title,category);
+                                        final BlogPost blogPost = new BlogPost(currentUserID, downloadUri, downloadThumbUri, blogID, desc,date,tickets,address,title,theCategory);
                                         blogPost.setBlogID(blogID);
                                         firebaseFirestore.collection("Posts").document(blogID).set(blogPost).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override

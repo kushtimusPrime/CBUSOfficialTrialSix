@@ -26,7 +26,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
@@ -102,27 +104,39 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
                                 @Override
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                                     if(documentSnapshot.exists()) {
-                                        BlogPost blogPost = documentSnapshot.toObject(BlogPost.class);
+                                        String userID=firebaseAuth.getCurrentUser().getUid();
+                                        final BlogPost blogPost = documentSnapshot.toObject(BlogPost.class);
+                                        final String category=blogPost.getCategory();
+                                        firebaseFirestore.collection("Users").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                Toast.makeText(getContext(),category,Toast.LENGTH_LONG).show();
+                                                String categoryBooleanStuff=task.getResult().getString(category);
+                                                if(categoryBooleanStuff.equals("true")) {
+                                                    try {
+                                                        ArrayList<Double> points=getLocationFromAddress(blogPost.getAddress());
+                                                        LatLng marker = new LatLng(points.get(0), points.get(1));
+                                                        InfoWindowData newInfo = new InfoWindowData();
+                                                        newInfo.setDateOfEvent(blogPost.getDate()); //hotel and food were the defaults it gave but we can change
+                                                        newInfo.setTickets(blogPost.getTickets());
+                                                        CustomInfoWindow customInfoWindow = new CustomInfoWindow(getActivity(),blogPost.getImageUri(),blogPost.getThumbUri());
+                                                        mGoogleMap.setInfoWindowAdapter(customInfoWindow);
+                                                        Marker newMarker= mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
+                                                                .icon(BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_AZURE)));
+                                                        newMarker.setTag(newInfo);
+                                                        float zoomLevel = 16.0f; //This goes up to 21
+                                                        // mMap.moveCamera(CameraUpdateFactory.newLatLng(marker));
+                                                    } catch (NullPointerException e) {
+                                                        // Toast.makeText(getContext(),"Please type a REAL address",Toast.LENGTH_LONG).show();
+
+                                                    }
+                                                }
+                                            }
+                                        });
                                         if(!blogPostList.contains(blogPost)) {
                                             blogPostList.add(blogPost);
                                         }
-                                        try {
-                                            ArrayList<Double> points=getLocationFromAddress(blogPost.getAddress());
-                                            LatLng marker = new LatLng(points.get(0), points.get(1));
-                                            InfoWindowData newInfo = new InfoWindowData();
-                                            newInfo.setDateOfEvent(blogPost.getDate()); //hotel and food were the defaults it gave but we can change
-                                            newInfo.setTickets(blogPost.getTickets());
-                                            CustomInfoWindow customInfoWindow = new CustomInfoWindow(getActivity(),blogPost.getImageUri(),blogPost.getThumbUri());
-                                            mGoogleMap.setInfoWindowAdapter(customInfoWindow);
-                                            Marker newMarker= mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
-                                                    .icon(BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_AZURE)));
-                                            newMarker.setTag(newInfo);
-                                            float zoomLevel = 16.0f; //This goes up to 21
-                                            // mMap.moveCamera(CameraUpdateFactory.newLatLng(marker));
-                                        } catch (NullPointerException e) {
-                                           // Toast.makeText(getContext(),"Please type a REAL address",Toast.LENGTH_LONG).show();
 
-                                        }
                                     }
                                 }
                             });

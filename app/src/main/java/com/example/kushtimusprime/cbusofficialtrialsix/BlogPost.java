@@ -45,6 +45,7 @@ public class BlogPost {
     }
 
     public String getImageUri() {
+        //commenting
         return imageUri;
     }
 

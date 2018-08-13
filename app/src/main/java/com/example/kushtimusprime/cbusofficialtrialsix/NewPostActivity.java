@@ -60,7 +60,6 @@ public class NewPostActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private String currentUserID;
     private Bitmap compressedImageFile;
-    private Object item;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +90,7 @@ public class NewPostActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view,
                                        int position, long id) {
-                item = adapterView.getItemAtPosition(position);
+                Object item = adapterView.getItemAtPosition(position);
             }
 
             @Override
@@ -123,7 +122,7 @@ public class NewPostActivity extends AppCompatActivity {
                 final String ticket=eventTicketLink.getText().toString();
                 final String address=eventAddress.getText().toString();
                 final String date=eventDate.getText().toString();
-                final String category=(String)item;
+                //final String category=(String)item;
 
                 if(!TextUtils.isEmpty(desc)&&postImageUri!=null&&!TextUtils.isEmpty(name)&&!TextUtils.isEmpty(ticket)&&!TextUtils.isEmpty(address)&&!TextUtils.isEmpty(date)) {
                     postProgressBar.setVisibility(View.VISIBLE);
@@ -165,7 +164,7 @@ public class NewPostActivity extends AppCompatActivity {
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
                                                     if (task.isSuccessful()) {
-                                                        Toast.makeText(NewPostActivity.this, "Post was successful ", Toast.LENGTH_LONG).show();
+                                                        Toast.makeText(NewPostActivity.this, "Post was successful", Toast.LENGTH_LONG).show();
                                                         Intent mainIntent = new Intent(NewPostActivity.this, MainActivity.class);
                                                         startActivity(mainIntent);
                                                         finish();

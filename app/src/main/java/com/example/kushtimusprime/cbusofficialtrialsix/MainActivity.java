@@ -3,6 +3,7 @@ package com.example.kushtimusprime.cbusofficialtrialsix;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -179,5 +180,10 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("RestrictedApi")
     private void makeButtonVisible() {
         refreshButton.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        accountFragment.onActivityResult(requestCode, resultCode, data);
     }
 }

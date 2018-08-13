@@ -1,79 +1,206 @@
 package com.example.kushtimusprime.cbusofficialtrialsix;
 
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
-import com.google.android.gms.maps.MapView;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class AccountFragment extends Fragment {
-    View view;
-    private CheckBox sportBox;
-    private CheckBox musicBox;
-    private CheckBox artBox;
-    private CheckBox foodBox;
-    private CheckBox academiaBox;
+    private View mView;
+    private ImageView profilePicture;
+    private Uri mainImageUri=null;
+    private EditText setupName;
+    private Button setupButton;
+    private StorageReference storageReference;
+    private FirebaseAuth firebaseAuth;
+    private ProgressBar setupBar;
+    private FirebaseFirestore firebaseFirestore;
+    private String userID;
+    private boolean isChanged=false;
 
-
-    public AccountFragment() {
-        // Required empty public constructor
-    }
-
-
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_account, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mView=inflater.inflate(R.layout.fragment_account, container, false);
+        return mView;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        sportBox = view.findViewById(R.id.checkBox);
-        musicBox = view.findViewById(R.id.checkBox2);
-        artBox = view.findViewById(R.id.checkBox3);
-        foodBox = view.findViewById(R.id.checkBox4);
-        academiaBox = view.findViewById(R.id.checkBox5);
+        profilePicture=(ImageView)mView.findViewById(R.id.profilePicture);
+        setupName=(EditText)mView.findViewById(R.id.setupName);
+        setupButton=(Button)mView.findViewById(R.id.setupButton);
+        storageReference= FirebaseStorage.getInstance().getReference();
+        firebaseAuth=FirebaseAuth.getInstance();
+        userID=firebaseAuth.getCurrentUser().getUid();
+        firebaseFirestore=FirebaseFirestore.getInstance();
+        setupBar=(ProgressBar)mView.findViewById(R.id.setupBar);
+        setupBar.setVisibility(View.VISIBLE);
+        setupButton.setEnabled(false);
+        firebaseFirestore.collection("Users").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    if(task.getResult().exists()) {
+                        String name=task.getResult().getString("name");
+                        String image=task.getResult().getString("image");
+                        mainImageUri=Uri.parse(image);
+                        setupName.setText(name);
+                        RequestOptions placeholderRequest=new RequestOptions();
+                        placeholderRequest.placeholder(R.drawable.profile_picture);
+                        Glide.with(getActivity()).setDefaultRequestOptions(placeholderRequest).load(image).into(profilePicture);
+                    } else {
+                        Toast.makeText(getContext(),"Data doesn't exist",Toast.LENGTH_LONG).show();
 
-        }
+                    }
 
-    public void onChecked(View view) {
-        // Is the view now checked?
-        boolean checked = ((CheckBox) view).isChecked();
+                } else {
+                    String errorMessage=task.getException().getMessage();
+                    Toast.makeText(getContext(),"Firestore Retrieve Error: "+errorMessage,Toast.LENGTH_LONG).show();
+                }
+                setupBar.setVisibility(View.INVISIBLE);
+                setupButton.setEnabled(true);
 
-        // Check which checkbox was clicked
-        switch(view.getId()) {
-            case R.id.checkBox:
-                if (checked)
-                // Put some meat on the sandwich
-                break;
-            case R.id.checkBox2:
-                if (checked)
-                // Cheese me
-                break;
-            case R.id.checkBox3:
-                if (checked)
-                // Put some meat on the sandwich
-                break;
-            case R.id.checkBox4:
-                if (checked)
-                // Put some meat on the sandwich
-                break;
-            case R.id.checkBox5:
-                if (checked)
-                // Put some meat on the sandwich
-                break;
-        }
+            }
+        });
+        setupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final String username = setupName.getText().toString();
+                if (!TextUtils.isEmpty(username) && mainImageUri != null) {
+                    setupBar.setVisibility(View.VISIBLE);
+                    if(isChanged) {
+                        userID = firebaseAuth.getCurrentUser().getUid();
+                        final StorageReference imagePath = storageReference.child("profile images").child(userID + ".jpg");
+                        imagePath.putFile(mainImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    storeFirestore(task, username);
+                                } else {
+                                    String errorMessage = task.getException().getMessage();
+                                    Toast.makeText(getContext(), "Image Error: " + errorMessage, Toast.LENGTH_LONG).show();
+                                    setupBar.setVisibility(View.INVISIBLE);
+
+                                }
+
+
+                            }
+                        });
+                    } else {
+                        storeFirestore(null,username);
+                    }
+                }
+            }
+        });
+        profilePicture.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M) {
+                    if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED) {
+                        Toast.makeText(getContext(),"Please change your phone's settings to allow for storage access",Toast.LENGTH_LONG).show();
+                        ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},1);
+                    } else {
+                        CropImage.activity()
+                                .setGuidelines(CropImageView.Guidelines.ON)
+                                .start(getActivity());
+
+                    }
+                } else {
+                    CropImage.activity()
+                            .setGuidelines(CropImageView.Guidelines.ON)
+                            .start(getActivity());
+                }
+            }
+        });
     }
 
+
+    private void storeFirestore(@NonNull Task<UploadTask.TaskSnapshot> task,String username) {
+        Uri downloadURI;
+        if(task!=null) {
+            downloadURI = task.getResult().getDownloadUrl();
+        } else {
+            downloadURI=mainImageUri;
+        }
+        Map<String,String> userMap=new HashMap<>();
+        userMap.put("name",username);
+        userMap.put("image",downloadURI.toString());
+        firebaseFirestore.collection("Users").document(userID).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()) {
+                    Toast.makeText(getContext(),"User settings are updated",Toast.LENGTH_LONG).show();
+                    Intent mainIntent=new Intent(getContext(),MainActivity.class);
+                    startActivity(mainIntent);
+                    getActivity().finish();
+
+                } else {
+                    String errorMessage=task.getException().getMessage();
+                    Toast.makeText(getContext(),"Firestore Error: "+errorMessage,Toast.LENGTH_LONG).show();
+                }
+                setupBar.setVisibility(View.INVISIBLE);
+
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            Toast.makeText(getContext(),"It got down here",Toast.LENGTH_LONG).show();
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                mainImageUri  = result.getUri();
+                profilePicture.setImageURI(mainImageUri);
+                isChanged=true;
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+        }
+    }
 }

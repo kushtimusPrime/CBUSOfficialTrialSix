@@ -37,4 +37,13 @@
     <string name="dining">Dining</string>
     <string name="academia">Academia</string>
     <string name="post_pin">Post Pin</string>
+    <string name="add_description">Add description</string>
+    <string name="date_mm_dd_yyyy">Date (MM/DD/YYYY)</string>
+    <string-array name="categories">
+        <item>Sports</item>
+        <item>Music/Theater</item>
+        <item>Visual Art</item>
+        <item>Dining</item>
+        <item>Academia</item>
+    </string-array>
 </resources>

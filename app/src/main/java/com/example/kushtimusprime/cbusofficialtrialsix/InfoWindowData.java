@@ -5,6 +5,7 @@ public class InfoWindowData {
     private String dateOfEvent;
     private String tickets;
     private String transport;
+    private String category;
 
     public String getImage() {
         return image;
@@ -37,5 +38,11 @@ public class InfoWindowData {
     public void setTransport(String transport) {
         this.transport = transport;
     }
+
+    public String getCategory() { return category; }
+
+    public void setCategory(String category) { this.category = category;}
 }
+
+
 

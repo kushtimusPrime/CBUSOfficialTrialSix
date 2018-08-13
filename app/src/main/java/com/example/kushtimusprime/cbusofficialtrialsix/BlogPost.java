@@ -17,11 +17,12 @@ public class BlogPost {
     private String tickets;
     private String address;
     private String title;
+    private String category;
 
     public BlogPost() {
     }
 
-    public BlogPost(String userID, String imageUri, String thumbUri, String blogID, String desc, String date, String tickets, String address, String title) {
+    public BlogPost(String userID, String imageUri, String thumbUri, String blogID, String desc, String date, String tickets, String address, String title, String category) {
         this.userID = userID;
         this.imageUri = imageUri;
         this.thumbUri = thumbUri;
@@ -31,6 +32,7 @@ public class BlogPost {
         this.tickets = tickets;
         this.address = address;
         this.title = title;
+        this.category = category;
        // convertToDate(date);
     }
 
@@ -105,6 +107,10 @@ public class BlogPost {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public String getCategory() { return category; }
+
+    public void setCategory(String category) { this.category = category; }
 
     public Date convertToDate(String theDate) {
         String month=theDate.substring(0,2);

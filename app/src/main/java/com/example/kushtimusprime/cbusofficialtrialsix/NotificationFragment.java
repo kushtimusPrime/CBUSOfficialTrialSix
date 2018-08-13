@@ -106,8 +106,8 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
                                         if(!blogPostList.contains(blogPost)) {
                                             blogPostList.add(blogPost);
                                         }
-                                        ArrayList<Double> points=getLocationFromAddress(blogPost.getAddress());
                                         try {
+                                            ArrayList<Double> points=getLocationFromAddress(blogPost.getAddress());
                                             LatLng marker = new LatLng(points.get(0), points.get(1));
                                             InfoWindowData newInfo = new InfoWindowData();
                                             newInfo.setDateOfEvent(blogPost.getDate()); //hotel and food were the defaults it gave but we can change

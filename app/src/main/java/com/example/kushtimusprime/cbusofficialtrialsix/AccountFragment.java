@@ -57,6 +57,11 @@ public class AccountFragment extends Fragment {
     private ProgressBar setupBar;
     private FirebaseFirestore firebaseFirestore;
     private String userID;
+    private CheckBox sportsBox;
+    private CheckBox musicBox;
+    private CheckBox artBox;
+    private CheckBox foodBox;
+    private CheckBox academiaBox;
     private boolean isChanged=false;
 
     @Nullable
@@ -72,6 +77,11 @@ public class AccountFragment extends Fragment {
         profilePicture=(ImageView)mView.findViewById(R.id.profilePicture);
         setupName=(EditText)mView.findViewById(R.id.setupName);
         setupButton=(Button)mView.findViewById(R.id.setupButton);
+        sportsBox=mView.findViewById(R.id.sportBox);
+        musicBox=mView.findViewById(R.id.musicBox);
+        artBox=mView.findViewById(R.id.artBox);
+        foodBox=mView.findViewById(R.id.foodBox);
+        academiaBox=mView.findViewById(R.id.academiaBox);
         storageReference= FirebaseStorage.getInstance().getReference();
         firebaseAuth=FirebaseAuth.getInstance();
         userID=firebaseAuth.getCurrentUser().getUid();
@@ -86,6 +96,26 @@ public class AccountFragment extends Fragment {
                     if(task.getResult().exists()) {
                         String name=task.getResult().getString("name");
                         String image=task.getResult().getString("image");
+                        String sports=task.getResult().getString("sports");
+                        String academia=task.getResult().getString("academia");
+                        String art=task.getResult().getString("art");
+                        String food=task.getResult().getString("food");
+                        String music=task.getResult().getString("music");
+                        if(sports.equals("true")) {
+                            sportsBox.setChecked(true);
+                        }
+                        if(academia.equals("true")) {
+                            academiaBox.setChecked(true);
+                        }
+                        if(art.equals("true")) {
+                            artBox.setChecked(true);
+                        }
+                        if(food.equals("true")) {
+                            foodBox.setChecked(true);
+                        }
+                        if(music.equals("true")) {
+                            musicBox.setChecked(true);
+                        }
                         mainImageUri=Uri.parse(image);
                         setupName.setText(name);
                         RequestOptions placeholderRequest=new RequestOptions();
@@ -109,6 +139,11 @@ public class AccountFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 final String username = setupName.getText().toString();
+                final boolean sportsBoolean=sportsBox.isChecked();
+                final boolean musicBoolean=musicBox.isChecked();
+                final boolean artBoolean=artBox.isChecked();
+                final boolean foodBoolean=foodBox.isChecked();
+                final boolean academiaBoolean=academiaBox.isChecked();
                 if (!TextUtils.isEmpty(username) && mainImageUri != null) {
                     setupBar.setVisibility(View.VISIBLE);
                     if(isChanged) {
@@ -118,7 +153,7 @@ public class AccountFragment extends Fragment {
                             @Override
                             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                 if (task.isSuccessful()) {
-                                    storeFirestore(task, username);
+                                    storeFirestore(task, username,""+sportsBoolean,""+musicBoolean,""+artBoolean,""+foodBoolean,""+academiaBoolean);
                                 } else {
                                     String errorMessage = task.getException().getMessage();
                                     Toast.makeText(getContext(), "Image Error: " + errorMessage, Toast.LENGTH_LONG).show();
@@ -130,7 +165,7 @@ public class AccountFragment extends Fragment {
                             }
                         });
                     } else {
-                        storeFirestore(null,username);
+                        storeFirestore(null, username,""+sportsBoolean,""+musicBoolean,""+artBoolean,""+foodBoolean,""+academiaBoolean);
                     }
                 }
             }
@@ -159,7 +194,7 @@ public class AccountFragment extends Fragment {
     }
 
 
-    private void storeFirestore(@NonNull Task<UploadTask.TaskSnapshot> task,String username) {
+    private void storeFirestore(@NonNull Task<UploadTask.TaskSnapshot> task,String username,String sports,String music,String art,String food,String academia) {
         Uri downloadURI;
         if(task!=null) {
             downloadURI = task.getResult().getDownloadUrl();
@@ -169,6 +204,11 @@ public class AccountFragment extends Fragment {
         Map<String,String> userMap=new HashMap<>();
         userMap.put("name",username);
         userMap.put("image",downloadURI.toString());
+        userMap.put("sports",sports);
+        userMap.put("music",music);
+        userMap.put("art",art);
+        userMap.put("food",food);
+        userMap.put("academia",academia);
         firebaseFirestore.collection("Users").document(userID).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

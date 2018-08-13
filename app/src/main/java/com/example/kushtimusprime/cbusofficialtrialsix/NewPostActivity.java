@@ -14,6 +14,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import android.widget.Spinner;
+import android.widget.ArrayAdapter;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.AdapterView;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -48,6 +52,7 @@ public class NewPostActivity extends AppCompatActivity {
     private EditText eventAddress;
     private EditText eventDate;
     private Button postButton;
+    private Spinner category;
     private Uri postImageUri=null;
     private ProgressBar postProgressBar;
     private StorageReference storageReference;
@@ -55,6 +60,7 @@ public class NewPostActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private String currentUserID;
     private Bitmap compressedImageFile;
+    private Object item;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +77,30 @@ public class NewPostActivity extends AppCompatActivity {
         eventAddress=(EditText)findViewById(R.id.eventAddress);
         eventDate =(EditText)findViewById(R.id.eventDate);
         postButton=(Button)findViewById(R.id.postButton);
+
+        category = (Spinner) findViewById(R.id.spinner);
+// Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.categories, android.R.layout.simple_spinner_item);
+// Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+// Apply the adapter to the spinner
+        category.setAdapter(adapter);
+        category.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view,
+                                       int position, long id) {
+                item = adapterView.getItemAtPosition(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
         storageReference=FirebaseStorage.getInstance().getReference();
         firebaseFirestore=FirebaseFirestore.getInstance();
         mAuth=FirebaseAuth.getInstance();
@@ -93,6 +123,7 @@ public class NewPostActivity extends AppCompatActivity {
                 final String ticket=eventTicketLink.getText().toString();
                 final String address=eventAddress.getText().toString();
                 final String date=eventDate.getText().toString();
+                final String category=(String)item;
 
                 if(!TextUtils.isEmpty(desc)&&postImageUri!=null&&!TextUtils.isEmpty(name)&&!TextUtils.isEmpty(ticket)&&!TextUtils.isEmpty(address)&&!TextUtils.isEmpty(date)) {
                     postProgressBar.setVisibility(View.VISIBLE);
@@ -134,7 +165,7 @@ public class NewPostActivity extends AppCompatActivity {
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
                                                     if (task.isSuccessful()) {
-                                                        Toast.makeText(NewPostActivity.this, "Post was successful", Toast.LENGTH_LONG).show();
+                                                        Toast.makeText(NewPostActivity.this, "Post was successful ", Toast.LENGTH_LONG).show();
                                                         Intent mainIntent = new Intent(NewPostActivity.this, MainActivity.class);
                                                         startActivity(mainIntent);
                                                         finish();

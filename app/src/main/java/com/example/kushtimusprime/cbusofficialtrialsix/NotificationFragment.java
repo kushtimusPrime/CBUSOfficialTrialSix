@@ -123,27 +123,27 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
                                                         mGoogleMap.setInfoWindowAdapter(customInfoWindow);
                                                         if(category.equals("sports")) {
                                                             Marker newMarker = mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
-                                                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.baseline_directions_run_black_24dp)));
+                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
                                                             newMarker.setTag(newInfo);
                                                         }
                                                         if(category.equals("music")) {
                                                             Marker newMarker = mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
-                                                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.baseline_music_note_black_24dp)));
+                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
                                                             newMarker.setTag(newInfo);
                                                         }
                                                         if(category.equals("art")) {
                                                             Marker newMarker = mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
-                                                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.baseline_brush_black_24dp)));
+                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
                                                             newMarker.setTag(newInfo);
                                                         }
                                                         if(category.equals("food")) {
                                                             Marker newMarker = mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
-                                                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.baseline_fastfood_black_24dp)));
+                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
                                                             newMarker.setTag(newInfo);
                                                         }
                                                         if(category.equals("academia")) {
                                                             Marker newMarker = mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
-                                                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.baseline_library_books_black_24dp)));
+                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
                                                             newMarker.setTag(newInfo);
                                                         }
                                                         float zoomLevel = 16.0f; //This goes up to 21
@@ -284,6 +284,7 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
                        expandIntent.putExtra("tickets",blogPostList.get(a).getTickets());
                        expandIntent.putExtra("address",blogPostList.get(a).getAddress());
                        expandIntent.putExtra("category",blogPostList.get(a).getCategory());
+                       expandIntent.putExtra("imageUri",blogPostList.get(a).getImageUri());
                        startActivity(expandIntent);
                    }
                }

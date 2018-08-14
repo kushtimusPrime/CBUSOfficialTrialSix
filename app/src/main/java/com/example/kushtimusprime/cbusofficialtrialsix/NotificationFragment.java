@@ -121,9 +121,31 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
                                                         newInfo.setTickets(blogPost.getTickets());
                                                         CustomInfoWindow customInfoWindow = new CustomInfoWindow(getActivity(),blogPost.getImageUri(),blogPost.getThumbUri());
                                                         mGoogleMap.setInfoWindowAdapter(customInfoWindow);
-                                                        Marker newMarker= mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
-                                                                .icon(BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_AZURE)));
-                                                        newMarker.setTag(newInfo);
+                                                        if(category.equals("sports")) {
+                                                            Marker newMarker = mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
+                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
+                                                            newMarker.setTag(newInfo);
+                                                        }
+                                                        if(category.equals("music")) {
+                                                            Marker newMarker = mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
+                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                                                            newMarker.setTag(newInfo);
+                                                        }
+                                                        if(category.equals("art")) {
+                                                            Marker newMarker = mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
+                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                                                            newMarker.setTag(newInfo);
+                                                        }
+                                                        if(category.equals("food")) {
+                                                            Marker newMarker = mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
+                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                                                            newMarker.setTag(newInfo);
+                                                        }
+                                                        if(category.equals("academia")) {
+                                                            Marker newMarker = mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
+                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                                                            newMarker.setTag(newInfo);
+                                                        }
                                                         float zoomLevel = 16.0f; //This goes up to 21
                                                         // mMap.moveCamera(CameraUpdateFactory.newLatLng(marker));
                                                     } catch (NullPointerException e) {

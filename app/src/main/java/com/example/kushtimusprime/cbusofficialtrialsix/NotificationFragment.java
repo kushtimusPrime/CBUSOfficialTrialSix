@@ -110,7 +110,6 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
                                         firebaseFirestore.collection("Users").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                             @Override
                                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                Toast.makeText(getContext(),category,Toast.LENGTH_LONG).show();
                                                 String categoryBooleanStuff=task.getResult().getString(category);
                                                 if(categoryBooleanStuff.equals("true")) {
                                                     try {
@@ -150,6 +149,7 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
                                                         // mMap.moveCamera(CameraUpdateFactory.newLatLng(marker));
                                                     } catch (NullPointerException e) {
                                                         // Toast.makeText(getContext(),"Please type a REAL address",Toast.LENGTH_LONG).show();
+                                                        //Testing some stuff
 
                                                     }
                                                 }

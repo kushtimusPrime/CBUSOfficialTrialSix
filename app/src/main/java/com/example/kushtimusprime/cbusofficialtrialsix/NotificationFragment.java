@@ -287,6 +287,7 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
                        expandIntent.putExtra("imageUri",blogPostList.get(a).getImageUri());
                        startActivity(expandIntent);
                    }
+                   //Commenting
                }
            }
        });

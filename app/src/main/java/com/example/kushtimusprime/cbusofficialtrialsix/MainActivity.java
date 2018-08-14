@@ -70,10 +70,12 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.bottomAccount:
                         replaceFragment(accountFragment);
                         addPostButton.setVisibility(View.GONE);
+                        refreshButton.setVisibility(View.GONE);
                         return true;
                     case R.id.bottomNotification:
                         replaceFragment(notificationFragment);
                         addPostButton.setVisibility(View.VISIBLE);
+                        refreshButton.setVisibility(View.VISIBLE);
                         return true;
                     default:
                         return false;
@@ -139,16 +141,12 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.actionLogoutButton:
                 logOut();
-                return true;
-            case R.id.actionSettingsButton:
-                Intent settingsIntent=new Intent(MainActivity.this,SetupActivity.class);
-                startActivity(settingsIntent);
-                finish();
                 return true;
 
             default:
@@ -163,11 +161,6 @@ public class MainActivity extends AppCompatActivity {
     }
     private void replaceFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
-        if(fragment.equals(homeFragment)) {
-            makeButtonVisible();
-        } else {
-            makeButtonInvisible();
-        }
         fragmentTransaction.replace(R.id.mainContainer,fragment);
         fragmentTransaction.commit();
     }

@@ -118,6 +118,7 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
                                                         InfoWindowData newInfo = new InfoWindowData();
                                                         newInfo.setDateOfEvent(blogPost.getDate()); //hotel and food were the defaults it gave but we can change
                                                         newInfo.setTickets(blogPost.getTickets());
+                                                        newInfo.setCategory(blogPost.getCategory());
                                                         CustomInfoWindow customInfoWindow = new CustomInfoWindow(getActivity(),blogPost.getImageUri(),blogPost.getThumbUri());
                                                         mGoogleMap.setInfoWindowAdapter(customInfoWindow);
                                                         if(category.equals("sports")) {
@@ -282,8 +283,7 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
                        expandIntent.putExtra("date",blogPostList.get(a).getDate());
                        expandIntent.putExtra("tickets",blogPostList.get(a).getTickets());
                        expandIntent.putExtra("address",blogPostList.get(a).getAddress());
-                       expandIntent.putExtra("imageUri",blogPostList.get(a).getImageUri());
-                       expandIntent.putExtra("thumbUri",blogPostList.get(a).getThumbUri());
+                       expandIntent.putExtra("category",blogPostList.get(a).getCategory());
                        startActivity(expandIntent);
                    }
                }

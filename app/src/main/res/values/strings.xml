@@ -39,6 +39,8 @@
     <string name="post_pin">Post Pin</string>
     <string name="add_description">Add description</string>
     <string name="date_mm_dd_yyyy">Date (MM/DD/YYYY)</string>
+    <string name="click_for_more_information">Click for more information</string>
+    <string name="textview">TextView</string>
     <string-array name="categories">
         <item>sports</item>
         <item>music</item>

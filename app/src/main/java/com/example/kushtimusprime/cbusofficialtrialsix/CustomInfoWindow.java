@@ -42,6 +42,7 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
         TextView dateOfEvent_tv = view.findViewById(R.id.dateOfEvent);
         TextView tickets_tv = view.findViewById(R.id.tickets);
         TextView transport_tv = view.findViewById(R.id.transport);
+        TextView category = view.findViewById(R.id.category);
 
         name_tv.setText(marker.getTitle());
         details_tv.setText(marker.getSnippet());
@@ -67,6 +68,7 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
         dateOfEvent_tv.setText(infoWindowData.getDateOfEvent());
         tickets_tv.setText(infoWindowData.getTickets());
         transport_tv.setText(infoWindowData.getTransport());
+        category.setText(infoWindowData.getCategory());
 
         return view;
     }

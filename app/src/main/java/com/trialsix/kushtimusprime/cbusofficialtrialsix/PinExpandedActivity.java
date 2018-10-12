@@ -1,4 +1,4 @@
-package com.example.kushtimusprime.cbusofficialtrialsix;
+package com.trialsix.kushtimusprime.cbusofficialtrialsix;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

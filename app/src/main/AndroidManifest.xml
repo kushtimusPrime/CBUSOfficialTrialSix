@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.kushtimusprime.cbusofficialtrialsix">
+    package="com.trialsix.kushtimusprime.cbusofficialtrialsix">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.trialsix.kushtimusprime.cbusofficialtrialsix.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,16 +24,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name="com.trialsix.kushtimusprime.cbusofficialtrialsix.LoginActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".SetupActivity" />
+        <activity android:name="com.trialsix.kushtimusprime.cbusofficialtrialsix.RegisterActivity" />
+        <activity android:name="com.trialsix.kushtimusprime.cbusofficialtrialsix.SetupActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
         <activity
-            android:name=".NewPostActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name="com.trialsix.kushtimusprime.cbusofficialtrialsix.NewPostActivity"
+            android:parentActivityName="com.trialsix.kushtimusprime.cbusofficialtrialsix.MainActivity" />
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -52,9 +52,9 @@
             android:required="false" />
 
         <activity
-            android:name=".MapsActivity"
+            android:name="com.trialsix.kushtimusprime.cbusofficialtrialsix.MapsActivity"
             android:label="@string/title_activity_maps" />
-        <activity android:name=".PinExpandedActivity"></activity>
+        <activity android:name="com.trialsix.kushtimusprime.cbusofficialtrialsix.PinExpandedActivity"></activity>
     </application>
 
 </manifest>

@@ -6,15 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".SetupActivity">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/setupToolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></android.support.v7.widget.Toolbar>
-
     <ImageView
         android:id="@+id/profilePicture"
         android:layout_width="92dp"
@@ -23,11 +14,11 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="8dp"
         android:contentDescription="@string/DescriptionProfilePicture"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/setupToolbar"
+        app:layout_constraintTop_toBottomOf="@+id/setupBar"
         app:srcCompat="@drawable/profile_picture" />
 
     <EditText
@@ -38,7 +29,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="@string/setupNameHint"
         android:inputType="textPersonName"
@@ -51,19 +42,19 @@
         android:id="@+id/setupButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:background="@color/colorAccent"
         android:text="@string/setupButtonNameText"
         android:textAllCaps="false"
         android:textColor="@color/common_google_signin_btn_text_dark_default"
         android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/setupName" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ProgressBar
         android:id="@+id/setupBar"
@@ -72,6 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:indeterminate="true"
         android:paddingLeft="0dp"
         android:paddingRight="0dp"
@@ -79,6 +71,98 @@
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/setupToolbar" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/interestsTextbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/select_interests"
+        android:textSize="32sp"
+        app:layout_constraintBottom_toTopOf="@+id/sportBox"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/setupName" />
+
+    <CheckBox
+        android:id="@+id/sportBox"
+        android:layout_width="178dp"
+        android:layout_height="31dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="274dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="274dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/sports"
+        app:layout_constraintBottom_toTopOf="@+id/musicBox"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <CheckBox
+        android:id="@+id/musicBox"
+        android:layout_width="178dp"
+        android:layout_height="34dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="274dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="274dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/music_theater"
+        app:layout_constraintBottom_toTopOf="@+id/artBox"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <CheckBox
+        android:id="@+id/artBox"
+        android:layout_width="178dp"
+        android:layout_height="34dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="190dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="274dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/visual_art"
+        app:layout_constraintBottom_toTopOf="@+id/foodBox"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <CheckBox
+        android:id="@+id/foodBox"
+        android:layout_width="178dp"
+        android:layout_height="32dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="190dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="274dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/dining"
+        app:layout_constraintBottom_toTopOf="@+id/academiaBox"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <CheckBox
+        android:id="@+id/academiaBox"
+        android:layout_width="176dp"
+        android:layout_height="36dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="192dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="274dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/academia"
+        app:layout_constraintBottom_toTopOf="@+id/setupButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

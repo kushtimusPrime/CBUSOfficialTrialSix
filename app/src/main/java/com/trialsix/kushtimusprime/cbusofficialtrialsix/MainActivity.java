@@ -1,4 +1,4 @@
-package com.example.kushtimusprime.cbusofficialtrialsix;
+package com.trialsix.kushtimusprime.cbusofficialtrialsix;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;

@@ -1,4 +1,4 @@
- package com.example.kushtimusprime.cbusofficialtrialsix;
+ package com.trialsix.kushtimusprime.cbusofficialtrialsix;
 
 
 import android.content.Intent;
@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,13 +38,11 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
-/**
+ /**
  * A simple {@link Fragment} subclass.
  */
 public class NotificationFragment extends Fragment implements OnMapReadyCallback{

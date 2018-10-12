@@ -1,4 +1,4 @@
-package com.example.kushtimusprime.cbusofficialtrialsix;
+package com.trialsix.kushtimusprime.cbusofficialtrialsix;
 
 public class InfoWindowData {
     private String image;

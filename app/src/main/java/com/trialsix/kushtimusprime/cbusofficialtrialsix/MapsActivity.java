@@ -1,4 +1,4 @@
-package com.example.kushtimusprime.cbusofficialtrialsix;
+package com.trialsix.kushtimusprime.cbusofficialtrialsix;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;

@@ -1,4 +1,4 @@
-package com.example.kushtimusprime.cbusofficialtrialsix;
+package com.trialsix.kushtimusprime.cbusofficialtrialsix;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -35,8 +36,6 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 public class SetupActivity extends AppCompatActivity {
 
     private ImageView profilePicture;
@@ -49,15 +48,25 @@ public class SetupActivity extends AppCompatActivity {
     private FirebaseFirestore firebaseFirestore;
     private String userID;
     private boolean isChanged=false;
+    private CheckBox sportsBox;
+    private CheckBox musicBox;
+    private CheckBox artBox;
+    private CheckBox foodBox;
+    private CheckBox academiaBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup);
-        Toolbar setupToolbar=findViewById(R.id.setupToolbar);
-        setSupportActionBar(setupToolbar);
-        getSupportActionBar().setTitle("Profile Setup");
+        //Toolbar setupToolbar=findViewById(R.id.setupBar);
+       // setSupportActionBar(setupToolbar);
+       // getSupportActionBar().setTitle("Profile Setup");
         profilePicture=(ImageView)findViewById(R.id.profilePicture);
+        sportsBox=findViewById(R.id.sportBox);
+        musicBox=findViewById(R.id.musicBox);
+        artBox=findViewById(R.id.artBox);
+        foodBox=findViewById(R.id.foodBox);
+        academiaBox=findViewById(R.id.academiaBox);
         setupName=(EditText)findViewById(R.id.setupName);
         setupButton=(Button)findViewById(R.id.setupButton);
         storageReference= FirebaseStorage.getInstance().getReference();
@@ -72,6 +81,26 @@ public class SetupActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()) {
                     if(task.getResult().exists()) {
+                        String sports=task.getResult().getString("sports");
+                        String academia=task.getResult().getString("academia");
+                        String art=task.getResult().getString("art");
+                        String food=task.getResult().getString("food");
+                        String music=task.getResult().getString("music");
+                        if(sports.equals("true")) {
+                            sportsBox.setChecked(true);
+                        }
+                        if(academia.equals("true")) {
+                            academiaBox.setChecked(true);
+                        }
+                        if(art.equals("true")) {
+                            artBox.setChecked(true);
+                        }
+                        if(food.equals("true")) {
+                            foodBox.setChecked(true);
+                        }
+                        if(music.equals("true")) {
+                            musicBox.setChecked(true);
+                        }
                         String name=task.getResult().getString("name");
                         String image=task.getResult().getString("image");
                         mainImageUri=Uri.parse(image);

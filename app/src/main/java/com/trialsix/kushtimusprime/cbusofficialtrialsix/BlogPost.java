@@ -1,9 +1,4 @@
-package com.example.kushtimusprime.cbusofficialtrialsix;
-
-import android.widget.Toast;
-
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
+package com.trialsix.kushtimusprime.cbusofficialtrialsix;
 
 import java.util.Date;
 

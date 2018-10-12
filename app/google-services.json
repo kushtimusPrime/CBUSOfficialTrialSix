@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:1062489681682:android:9b077bfaaf5b5fe7",
         "android_client_info": {
-          "package_name": "com.example.kushtimusprime.cbusofficialtrialsix"
+          "package_name": "com.trialsix.kushtimusprime.cbusofficialtrialsix"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "1062489681682-4c2rq8e0qh73cb7a5f4pbs86sijgjpss.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.kushtimusprime.cbusofficialtrialsix",
+            "package_name": "com.trialsix.kushtimusprime.cbusofficialtrialsix",
             "certificate_hash": "c6d4c74a2839a81dc4ddc62910f40c8f1a480009"
           }
         },

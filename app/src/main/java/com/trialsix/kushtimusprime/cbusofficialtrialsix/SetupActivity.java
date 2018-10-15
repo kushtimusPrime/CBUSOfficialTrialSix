@@ -126,6 +126,11 @@ public class SetupActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 final String username = setupName.getText().toString();
+                final boolean sportsBoolean=sportsBox.isChecked();
+                final boolean musicBoolean=musicBox.isChecked();
+                final boolean artBoolean=artBox.isChecked();
+                final boolean foodBoolean=foodBox.isChecked();
+                final boolean academiaBoolean=academiaBox.isChecked();
                 if (!TextUtils.isEmpty(username) && mainImageUri != null) {
                     setupBar.setVisibility(View.VISIBLE);
                      if(isChanged) {
@@ -136,6 +141,7 @@ public class SetupActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                 if (task.isSuccessful()) {
                                     storeFirestore(task, username);
+                                    storeFirestore(task,username,""+sportsBoolean,""+musicBoolean,""+artBoolean,""+foodBoolean,""+academiaBoolean);
                                 } else {
                                     String errorMessage = task.getException().getMessage();
                                     Toast.makeText(SetupActivity.this, "Image Error: " + errorMessage, Toast.LENGTH_LONG).show();
@@ -217,5 +223,39 @@ public class SetupActivity extends AppCompatActivity {
                 Exception error = result.getError();
             }
         }
+    }
+
+    private void storeFirestore(@NonNull Task<UploadTask.TaskSnapshot> task,String username,String sports,String music,String art,String food,String academia) {
+        Uri downloadURI;
+        if(task!=null) {
+            downloadURI = task.getResult().getDownloadUrl();
+        } else {
+            downloadURI=mainImageUri;
+        }
+        Map<String,String> userMap=new HashMap<>();
+        userMap.put("name",username);
+        userMap.put("image",downloadURI.toString());
+        userMap.put("sports",sports);
+        userMap.put("music",music);
+        userMap.put("art",art);
+        userMap.put("food",food);
+        userMap.put("academia",academia);
+        firebaseFirestore.collection("Users").document(userID).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()) {
+                    Toast.makeText(SetupActivity.this,"User settings are updated",Toast.LENGTH_LONG).show();
+                    Intent mainIntent=new Intent(SetupActivity.this,MainActivity.class);
+                    startActivity(mainIntent);
+                    SetupActivity.this.finish();
+
+                } else {
+                    String errorMessage=task.getException().getMessage();
+                    Toast.makeText(SetupActivity.this,"Firestore Error: "+errorMessage,Toast.LENGTH_LONG).show();
+                }
+                setupBar.setVisibility(View.INVISIBLE);
+
+            }
+        });
     }
 }

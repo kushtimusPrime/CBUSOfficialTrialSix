@@ -24,6 +24,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * BlogRecyclerAdapter
+ *
+ * The following class allows for all of the blog posts to be stored together
+ *
+ * @author Kush Hari, Melanie Marszal
+ * @version 1.0
+ */
 public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapter.ViewHolder> {
     public List<BlogPost> blogPostList=new ArrayList<>();
     public Context context;

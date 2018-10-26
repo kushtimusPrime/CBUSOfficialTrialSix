@@ -2,6 +2,14 @@ package com.trialsix.kushtimusprime.cbusofficialtrialsix;
 
 import java.util.Date;
 
+/**
+ * BlogPost
+ *
+ * The BlogPost class creates an object, which stores all of the data for an event post
+ *
+ * @author Kush Hari, Melanie Marszal
+ * @version 1.0
+ */
 public class BlogPost {
     private String userID;
     private String imageUri;

@@ -87,6 +87,7 @@ public class AccountFragment extends Fragment {
         setupBar=(ProgressBar)mView.findViewById(R.id.setupBar);
         setupBar.setVisibility(View.VISIBLE);
         setupButton.setEnabled(false);
+        //The below onCompleteListener takes the user data regarding individualized interests from Firebase, and loads them on the screen
         firebaseFirestore.collection("Users").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -133,6 +134,8 @@ public class AccountFragment extends Fragment {
 
             }
         });
+        //The below onClickListener allows the user to select different interests
+        //When the button is clicked, the new interests are uploaded into the Firebase database
         setupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -192,6 +195,21 @@ public class AccountFragment extends Fragment {
     }
 
 
+    /**
+     * storeFirestore
+     *
+     * This method works with any type of task involving firestore uploads
+     * (Define what a task is when I get wifi)
+     * Along with taking in a task object, the method takes in essential user data, and uploads the data into the Firestore
+     * @param task- The task used in the method (can be null, or can be an image upload task snapshot)
+     * @param username- The current user's username
+     * @param sports- The boolean determining if the user is interested in sports
+     * @param music- The boolean determining if the user is interested in music
+     * @param art- The boolean determining if the user is interested in art
+     * @param food- The boolean determining if the user is interested in food
+     * @param academia- The boolean determining if the user is interested in academia
+     * @return
+     */
     private void storeFirestore(@NonNull Task<UploadTask.TaskSnapshot> task,String username,String sports,String music,String art,String food,String academia) {
         Uri downloadURI;
         if(task!=null) {

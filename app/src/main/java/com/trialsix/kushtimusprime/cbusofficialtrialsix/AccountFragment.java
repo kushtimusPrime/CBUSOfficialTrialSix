@@ -208,7 +208,6 @@ public class AccountFragment extends Fragment {
      * @param art- The boolean determining if the user is interested in art
      * @param food- The boolean determining if the user is interested in food
      * @param academia- The boolean determining if the user is interested in academia
-     * @return
      */
     private void storeFirestore(@NonNull Task<UploadTask.TaskSnapshot> task,String username,String sports,String music,String art,String food,String academia) {
         Uri downloadURI;

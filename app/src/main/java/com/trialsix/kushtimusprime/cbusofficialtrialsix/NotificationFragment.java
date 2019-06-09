@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,49 +108,53 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
                                         firebaseFirestore.collection("Users").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                             @Override
                                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                String categoryBooleanStuff=task.getResult().getString(category);
-                                                if(categoryBooleanStuff.equals("true")) {
-                                                    try {
-                                                        ArrayList<Double> points=getLocationFromAddress(blogPost.getAddress());
-                                                        LatLng marker = new LatLng(points.get(0), points.get(1));
-                                                        InfoWindowData newInfo = new InfoWindowData();
-                                                        newInfo.setDateOfEvent(blogPost.getDate()); //hotel and food were the defaults it gave but we can change
-                                                        newInfo.setTickets(blogPost.getTickets());
-                                                        newInfo.setCategory(blogPost.getCategory());
-                                                        CustomInfoWindow customInfoWindow = new CustomInfoWindow(getActivity(),blogPost.getImageUri(),blogPost.getThumbUri());
-                                                        mGoogleMap.setInfoWindowAdapter(customInfoWindow);
-                                                        if(category.equals("sports")) {
-                                                            Marker newMarker = mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
-                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-                                                            newMarker.setTag(newInfo);
-                                                        }
-                                                        if(category.equals("music")) {
-                                                            Marker newMarker = mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
-                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-                                                            newMarker.setTag(newInfo);
-                                                        }
-                                                        if(category.equals("art")) {
-                                                            Marker newMarker = mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
-                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-                                                            newMarker.setTag(newInfo);
-                                                        }
-                                                        if(category.equals("food")) {
-                                                            Marker newMarker = mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
-                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-                                                            newMarker.setTag(newInfo);
-                                                        }
-                                                        if(category.equals("academia")) {
-                                                            Marker newMarker = mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
-                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
-                                                            newMarker.setTag(newInfo);
-                                                        }
-                                                        float zoomLevel = 16.0f; //This goes up to 21
-                                                        // mMap.moveCamera(CameraUpdateFactory.newLatLng(marker));
-                                                    } catch (NullPointerException e) {
-                                                        // Toast.makeText(getContext(),"Please type a REAL address",Toast.LENGTH_LONG).show();
-                                                        //Testing some stuff
+                                                try {
+                                                    String categoryBooleanStuff = task.getResult().getString(category);
+                                                    if (categoryBooleanStuff.equals("true")) {
+                                                        try {
+                                                            ArrayList<Double> points = getLocationFromAddress(blogPost.getAddress());
+                                                            LatLng marker = new LatLng(points.get(0), points.get(1));
+                                                            InfoWindowData newInfo = new InfoWindowData();
+                                                            newInfo.setDateOfEvent(blogPost.getDate()); //hotel and food were the defaults it gave but we can change
+                                                            newInfo.setTickets(blogPost.getTickets());
+                                                            newInfo.setCategory(blogPost.getCategory());
+                                                            CustomInfoWindow customInfoWindow = new CustomInfoWindow(getActivity(), blogPost.getImageUri(), blogPost.getThumbUri());
+                                                            mGoogleMap.setInfoWindowAdapter(customInfoWindow);
+                                                            if (category.equals("sports")) {
+                                                                Marker newMarker = mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
+                                                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                                                                newMarker.setTag(newInfo);
+                                                            }
+                                                            if (category.equals("music")) {
+                                                                Marker newMarker = mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
+                                                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                                                                newMarker.setTag(newInfo);
+                                                            }
+                                                            if (category.equals("art")) {
+                                                                Marker newMarker = mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
+                                                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                                                                newMarker.setTag(newInfo);
+                                                            }
+                                                            if (category.equals("food")) {
+                                                                Marker newMarker = mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
+                                                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                                                                newMarker.setTag(newInfo);
+                                                            }
+                                                            if (category.equals("academia")) {
+                                                                Marker newMarker = mGoogleMap.addMarker(new MarkerOptions().position(marker).title(blogPost.getTitle()).snippet(blogPost.getDesc())
+                                                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
+                                                                newMarker.setTag(newInfo);
+                                                            }
+                                                            float zoomLevel = 16.0f; //This goes up to 21
+                                                            // mMap.moveCamera(CameraUpdateFactory.newLatLng(marker));
+                                                        } catch (NullPointerException e) {
+                                                            // Toast.makeText(getContext(),"Please type a REAL address",Toast.LENGTH_LONG).show();
+                                                            //Testing some stuff
 
+                                                        }
                                                     }
+                                                } catch (Exception e) {
+                                                    Log.i("NotificationFragment","Got the exception");
                                                 }
                                             }
                                         });

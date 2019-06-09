@@ -155,6 +155,8 @@ public class SetupActivity extends AppCompatActivity {
                     } else {
                          storeFirestore(null,username);
                      }
+                } else {
+                    storeFirestore(null,username,""+sportsBoolean,""+musicBoolean,""+artBoolean,""+foodBoolean,""+academiaBoolean);
                 }
             }
         });
@@ -190,7 +192,11 @@ public class SetupActivity extends AppCompatActivity {
         }
         Map<String,String> userMap=new HashMap<>();
         userMap.put("name",username);
-        userMap.put("image",downloadURI.toString());
+        try {
+            userMap.put("image", downloadURI.toString());
+        } catch (Exception e) {
+            userMap.put("image","defaultUsed");
+        }
         firebaseFirestore.collection("Users").document(userID).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -234,7 +240,11 @@ public class SetupActivity extends AppCompatActivity {
         }
         Map<String,String> userMap=new HashMap<>();
         userMap.put("name",username);
-        userMap.put("image",downloadURI.toString());
+        try {
+            userMap.put("image", downloadURI.toString());
+        } catch (Exception e) {
+            userMap.put("image","defaultUsed");
+        }
         userMap.put("sports",sports);
         userMap.put("music",music);
         userMap.put("art",art);

@@ -115,11 +115,13 @@ public class AccountFragment extends Fragment {
                         if(music.equals("true")) {
                             musicBox.setChecked(true);
                         }
-                        mainImageUri=Uri.parse(image);
                         setupName.setText(name);
-                        RequestOptions placeholderRequest=new RequestOptions();
-                        placeholderRequest.placeholder(R.drawable.profile_picture);
-                        Glide.with(getActivity()).setDefaultRequestOptions(placeholderRequest).load(image).into(profilePicture);
+                        if(!image.equals("defaultUsed")) {
+                            mainImageUri = Uri.parse(image);
+                            RequestOptions placeholderRequest = new RequestOptions();
+                            placeholderRequest.placeholder(R.drawable.profile_picture);
+                            Glide.with(getActivity()).setDefaultRequestOptions(placeholderRequest).load(image).into(profilePicture);
+                        }
                     } else {
                         Toast.makeText(getContext(),"Data doesn't exist",Toast.LENGTH_LONG).show();
 

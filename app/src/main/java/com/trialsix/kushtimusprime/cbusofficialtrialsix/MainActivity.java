@@ -115,9 +115,14 @@ public class MainActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if(task.isSuccessful()) {
                         if(!task.getResult().exists()) {
-                            Intent setUpIntent=new Intent(MainActivity.this,SetupActivity.class);
-                            startActivity(setUpIntent);
-                            finish();
+                            try {
+                                Intent setUpIntent = new Intent(MainActivity.this, SetupActivity.class);
+                                startActivity(setUpIntent);
+                                finish();
+                            }
+                            catch(Exception e) {
+                                sendToLogin();
+                            }
                         }
                     } else {
                         String errorMessage = task.getException().getMessage();

@@ -1,5 +1,7 @@
 package com.trialsix.kushtimusprime.cbusofficialtrialsix;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -21,11 +23,12 @@ public class BlogPost {
     private String address;
     private String title;
     private String category;
+    private ArrayList<String> usersGoing;
 
     public BlogPost() {
     }
 
-    public BlogPost(String userID, String imageUri, String thumbUri, String blogID, String desc, String date, String tickets, String address, String title, String category) {
+    public BlogPost(String userID, String imageUri, String thumbUri, String blogID, String desc, String date, String tickets, String address, String title, String category, ArrayList<String> usersGoing) {
         this.userID = userID;
         this.imageUri = imageUri;
         this.thumbUri = thumbUri;
@@ -36,6 +39,7 @@ public class BlogPost {
         this.address = address;
         this.title = title;
         this.category = category;
+        this.usersGoing=usersGoing;
        // convertToDate(date);
     }
 
@@ -115,6 +119,10 @@ public class BlogPost {
     public String getCategory() { return category; }
 
     public void setCategory(String category) { this.category = category; }
+
+    public ArrayList<String> getUsersGoing() { return usersGoing; }
+
+    public void setUsersGoing(ArrayList<String> usersGoing) { this.usersGoing = usersGoing; }
 
     public Date convertToDate(String theDate) {
         String month=theDate.substring(0,2);

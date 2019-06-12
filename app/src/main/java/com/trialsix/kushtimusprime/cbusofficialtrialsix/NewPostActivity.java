@@ -35,6 +35,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import id.zelory.compressor.Compressor;
@@ -121,58 +122,88 @@ public class NewPostActivity extends AppCompatActivity {
                 final String date=eventDate.getText().toString();
                 final String theCategory=(String)item;
 
-                if(!TextUtils.isEmpty(desc)&&postImageUri!=null&&!TextUtils.isEmpty(name)&&!TextUtils.isEmpty(ticket)&&!TextUtils.isEmpty(address)&&!TextUtils.isEmpty(date)) {
+                if(!TextUtils.isEmpty(desc)&&!TextUtils.isEmpty(name)&&!TextUtils.isEmpty(ticket)&&!TextUtils.isEmpty(address)&&!TextUtils.isEmpty(date)) {
                     postProgressBar.setVisibility(View.VISIBLE);
                     final String randomName= UUID.randomUUID().toString();
                     StorageReference filePath=storageReference.child("Post Images").child(randomName+".jpg");
-                    filePath.putFile(postImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull final Task<UploadTask.TaskSnapshot> task) {
-                            final String downloadUri=task.getResult().getDownloadUrl().toString();
-
-                            if(task.isSuccessful()) {
-                                File imageFile = new File(postImageUri.getPath());
-                                try {
-                                    compressedImageFile = new Compressor(NewPostActivity.this)
-                                            .setMaxHeight(100)
-                                            .setMaxWidth(100)
-                                            .setQuality(2)
-                                            .compressToBitmap(imageFile);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
+                    if(postImageUri==null) {
+                        String blogID = firebaseFirestore.collection("Posts").document().getId();
+                        String theDate = date;
+                        String tickets = ticket;
+                        String theAddress = address;
+                        String title = name;
+                        ArrayList<String> usersGoing=new ArrayList<String>();
+                        usersGoing.add(mAuth.getCurrentUser().getUid());
+                        final BlogPost blogPost = new BlogPost(currentUserID, null, null, blogID, desc, date, tickets, address, title, theCategory,usersGoing);
+                        blogPost.setBlogID(blogID);
+                        firebaseFirestore.collection("Posts").document(blogID).set(blogPost).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(NewPostActivity.this, "Post was successful", Toast.LENGTH_LONG).show();
+                                        Intent mainIntent = new Intent(NewPostActivity.this, MainActivity.class);
+                                        startActivity(mainIntent);
+                                        finish();
+                                    } else {
+                                        String errorMessage = task.getException().getMessage();
+                                        Toast.makeText(NewPostActivity.this, "Error: " + errorMessage, Toast.LENGTH_LONG).show();
+                                    }
+                                    postProgressBar.setVisibility(View.INVISIBLE);
                                 }
-                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                compressedImageFile.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                                byte[] thumbData = baos.toByteArray();
-                                UploadTask uploadTask = storageReference.child("Post Images/Thumbnails").child(randomName + ".jpg").putBytes(thumbData);
-                                StorageTask<UploadTask.TaskSnapshot> taskSnapshotStorageTask = uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                        String downloadThumbUri = taskSnapshot.getDownloadUrl().toString();
-                                        String blogID = firebaseFirestore.collection("Posts").document().getId();
-                                        String theDate=date;
-                                        String tickets=ticket;
-                                        String theAddress=address;
-                                        String title=name;
-                                        final BlogPost blogPost = new BlogPost(currentUserID, downloadUri, downloadThumbUri, blogID, desc,date,tickets,address,title,theCategory);
-                                        blogPost.setBlogID(blogID);
-                                        firebaseFirestore.collection("Posts").document(blogID).set(blogPost).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
+                            }
+                        });
+                    } else {
+                        filePath.putFile(postImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull final Task<UploadTask.TaskSnapshot> task) {
+                                final String downloadUri = task.getResult().getDownloadUrl().toString();
+
+                                if (task.isSuccessful()) {
+                                    File imageFile = new File(postImageUri.getPath());
+                                    try {
+                                        compressedImageFile = new Compressor(NewPostActivity.this)
+                                                .setMaxHeight(100)
+                                                .setMaxWidth(100)
+                                                .setQuality(2)
+                                                .compressToBitmap(imageFile);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                    compressedImageFile.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                                    byte[] thumbData = baos.toByteArray();
+                                    UploadTask uploadTask = storageReference.child("Post Images/Thumbnails").child(randomName + ".jpg").putBytes(thumbData);
+                                    StorageTask<UploadTask.TaskSnapshot> taskSnapshotStorageTask = uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                            String downloadThumbUri = taskSnapshot.getDownloadUrl().toString();
+                                            String blogID = firebaseFirestore.collection("Posts").document().getId();
+                                            String theDate = date;
+                                            String tickets = ticket;
+                                            String theAddress = address;
+                                            String title = name;
+                                            ArrayList<String> usersGoing=new ArrayList<String>();
+                                            usersGoing.add(mAuth.getCurrentUser().getUid());
+                                            final BlogPost blogPost = new BlogPost(currentUserID, downloadUri, downloadThumbUri, blogID, desc, date, tickets, address, title, theCategory,usersGoing);
+                                            blogPost.setBlogID(blogID);
+                                            firebaseFirestore.collection("Posts").document(blogID).set(blogPost).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {
-                                                        Toast.makeText(NewPostActivity.this, "Post was successful", Toast.LENGTH_LONG).show();
-                                                        Intent mainIntent = new Intent(NewPostActivity.this, MainActivity.class);
-                                                        startActivity(mainIntent);
-                                                        finish();
-                                                    } else {
-                                                        String errorMessage = task.getException().getMessage();
-                                                        Toast.makeText(NewPostActivity.this, "Error: " + errorMessage, Toast.LENGTH_LONG).show();
+                                                        if (task.isSuccessful()) {
+                                                            Toast.makeText(NewPostActivity.this, "Post was successful", Toast.LENGTH_LONG).show();
+                                                            Intent mainIntent = new Intent(NewPostActivity.this, MainActivity.class);
+                                                            startActivity(mainIntent);
+                                                            finish();
+                                                        } else {
+                                                            String errorMessage = task.getException().getMessage();
+                                                            Toast.makeText(NewPostActivity.this, "Error: " + errorMessage, Toast.LENGTH_LONG).show();
+                                                        }
+                                                        postProgressBar.setVisibility(View.INVISIBLE);
                                                     }
-                                                    postProgressBar.setVisibility(View.INVISIBLE);
                                                 }
-                                            }
-                                        });
+                                            });
                                        /* firebaseFirestore.collection("Posts").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                             @Override
                                             public void onComplete(@NonNull Task<DocumentReference> task) {
@@ -189,22 +220,23 @@ public class NewPostActivity extends AppCompatActivity {
                                                 postProgressBar.setVisibility(View.INVISIBLE);
                                             }
                                         });*/
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        String errorMessage = e.getMessage();
-                                        Toast.makeText(NewPostActivity.this, "Error: " + errorMessage, Toast.LENGTH_LONG).show();
-                                    }
-                                });
-                            } else {
-                                postProgressBar.setVisibility(View.INVISIBLE);
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            String errorMessage = e.getMessage();
+                                            Toast.makeText(NewPostActivity.this, "Error: " + errorMessage, Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                } else {
+                                    postProgressBar.setVisibility(View.INVISIBLE);
+                                }
+
                             }
 
-                        }
 
-
-                    });
+                        });
+                    }
 
                 }
             }

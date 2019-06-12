@@ -10,4 +10,16 @@
         android:id="@+id/bottomAccount"
         android:icon="@drawable/baseline_person_black_24dp"
         android:title="@string/bottomAccountText" />
+    <item
+        android:id="@+id/bottomFriend"
+        android:icon="@drawable/baseline_people_white_24dp"
+        android:title="Friends" />
+    <item
+        android:id="@+id/bottomEvent"
+        android:icon="@drawable/baseline_event_white_24dp"
+        android:title="Events" />
+    <item
+        android:id="@+id/bottomLogout"
+        android:icon="@drawable/baseline_exit_to_app_white_24dp"
+        android:title="@string/action_logout_text" />
 </menu>

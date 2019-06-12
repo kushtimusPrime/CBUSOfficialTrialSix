@@ -22,10 +22,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.trialsix.kushtimusprime.cbusofficialtrialsix.dummy.DummyContent;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FriendFragment.OnListFragmentInteractionListener,EventFragment.OnListFragmentInteractionListener {
     private Toolbar mainToolbar;
     private FirebaseAuth mAuth;
     private FloatingActionButton addPostButton;
@@ -36,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private HomeFragment homeFragment;
     private NotificationFragment notificationFragment;
     private AccountFragment accountFragment;
+    private EventFragment eventFragment;
+    private FriendFragment friendFragment;
     private ArrayList<BlogPost> blogPosts=new ArrayList<>();
 
     @Override
@@ -55,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
         homeFragment = new HomeFragment();
         accountFragment = new AccountFragment();
         notificationFragment = new NotificationFragment();
+        eventFragment=new EventFragment();
+        friendFragment=new FriendFragment();
         replaceFragment(notificationFragment);
         //allows user to navigate between screens with menu on bottom
         mainBottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -76,6 +81,19 @@ public class MainActivity extends AppCompatActivity {
                         replaceFragment(notificationFragment);
                         addPostButton.setVisibility(View.VISIBLE);
                         refreshButton.setVisibility(View.VISIBLE);
+                        return true;
+                    case R.id.bottomEvent:
+                        replaceFragment(eventFragment);
+                        addPostButton.setVisibility(View.VISIBLE);
+                        refreshButton.setVisibility(View.VISIBLE);
+                        return true;
+                    case R.id.bottomFriend:
+                        replaceFragment(friendFragment);
+                        addPostButton.setVisibility(View.VISIBLE);
+                        refreshButton.setVisibility(View.VISIBLE);
+                        return true;
+                    case R.id.bottomLogout:
+                        logOut();
                         return true;
                     default:
                         return false;
@@ -140,26 +158,6 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu,menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @SuppressLint("RestrictedApi")
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.actionLogoutButton:
-                logOut();
-                return true;
-
-            default:
-
-                return false;
-        }
-    }
-
     private void logOut() {
         mAuth.signOut();
         sendToLogin();
@@ -183,5 +181,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         accountFragment.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+
     }
 }

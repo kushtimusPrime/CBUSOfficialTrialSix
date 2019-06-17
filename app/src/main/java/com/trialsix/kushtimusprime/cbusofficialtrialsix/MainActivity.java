@@ -2,6 +2,7 @@ package com.trialsix.kushtimusprime.cbusofficialtrialsix;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
@@ -22,11 +23,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.trialsix.kushtimusprime.cbusofficialtrialsix.dummy.DummyContent;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements FriendFragment.OnListFragmentInteractionListener,EventFragment.OnListFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements EventFragment.OnFragmentInteractionListener,FriendFragment.OnFragmentInteractionListener {
     private Toolbar mainToolbar;
     private FirebaseAuth mAuth;
     private FloatingActionButton addPostButton;
@@ -84,13 +84,13 @@ public class MainActivity extends AppCompatActivity implements FriendFragment.On
                         return true;
                     case R.id.bottomEvent:
                         replaceFragment(eventFragment);
-                        addPostButton.setVisibility(View.VISIBLE);
-                        refreshButton.setVisibility(View.VISIBLE);
+                        addPostButton.setVisibility(View.GONE);
+                        refreshButton.setVisibility(View.GONE);
                         return true;
                     case R.id.bottomFriend:
                         replaceFragment(friendFragment);
-                        addPostButton.setVisibility(View.VISIBLE);
-                        refreshButton.setVisibility(View.VISIBLE);
+                        addPostButton.setVisibility(View.GONE);
+                        refreshButton.setVisibility(View.GONE);
                         return true;
                     case R.id.bottomLogout:
                         logOut();
@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements FriendFragment.On
     }
 
     @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+    public void onFragmentInteraction(Uri uri) {
 
     }
 }

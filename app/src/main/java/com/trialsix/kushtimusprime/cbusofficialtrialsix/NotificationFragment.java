@@ -180,7 +180,7 @@ public class NotificationFragment extends Fragment implements OnMapReadyCallback
         mGoogleMap=googleMap;
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         float cityLevel=12.0f;
-        LatLng columbus=new LatLng(39.9612,-82.9988);
+        LatLng columbus=new LatLng(39.9945,-83.0624);
         //info window tester stuff
        /* LatLng melsHouse = new LatLng(40.057613, -83.082275);
         MarkerOptions markerOptions = new MarkerOptions();

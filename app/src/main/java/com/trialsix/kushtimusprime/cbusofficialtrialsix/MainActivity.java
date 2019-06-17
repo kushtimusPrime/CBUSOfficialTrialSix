@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements EventFragment.OnF
     private EventFragment eventFragment;
     private FriendFragment friendFragment;
     private ArrayList<BlogPost> blogPosts=new ArrayList<>();
-
+//hehehe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

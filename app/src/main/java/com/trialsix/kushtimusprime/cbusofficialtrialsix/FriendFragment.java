@@ -9,10 +9,21 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +48,10 @@ public class FriendFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-    private ArrayList<Friend> contacts;
-
-
+    private EditText friendSearch;
+    private ImageButton searchButton;
+    private ProgressBar progressBar;
+    private FirebaseFirestore firebaseFirestore;
 
     public FriendFragment() {
         // Required empty public constructor
@@ -77,19 +89,50 @@ public class FriendFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_friend, container, false);
-        contacts=new ArrayList<>();
-        RecyclerView rvContacts = view.findViewById(R.id.rvContacts);
+        friendSearch=view.findViewById(R.id.searchBar);
+        searchButton=view.findViewById(R.id.searchButton);
+        progressBar=view.findViewById(R.id.progressBarFriend);
+        firebaseFirestore=FirebaseFirestore.getInstance();
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
+                final String username=friendSearch.getText().toString();
+                Query friendQuery=firebaseFirestore.collection("Users").orderBy("name",Query.Direction.DESCENDING);
+                friendQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                        try {
+                            for(DocumentChange doc:documentSnapshots.getDocumentChanges()) {
+                                if (doc.getType() == DocumentChange.Type.ADDED) {
+                                    DocumentReference documentReference = doc.getDocument().getReference();
+                                    documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                            if(documentSnapshot.exists()) {
+                                                String name=documentSnapshot.getString("name");
+                                                if(name.contains(username)) {
+                                                    Toast.makeText(getContext(),name,Toast.LENGTH_LONG).show();
+                                                    progressBar.setVisibility(View.INVISIBLE);
+                                                } else {
+                                                    progressBar.setVisibility(View.INVISIBLE);
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        } catch (Exception ef) {
+                            Toast.makeText(getContext(),"Error occured",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+            }
+        });
 
-        // Initialize contacts
-        for(int i=0;i<20;i++) {
-            contacts.add(new Friend("Sample friend: "+(i+1),null));
-        }
         // Create adapter passing in the sample user data
-        FriendAdapter adapter = new FriendAdapter(contacts);
         // Attach the adapter to the recyclerview to populate items
-        rvContacts.setAdapter(adapter);
         // Set layout manager to position the items
-        rvContacts.setLayoutManager(new LinearLayoutManager(getContext()));
         return view;
     }
 

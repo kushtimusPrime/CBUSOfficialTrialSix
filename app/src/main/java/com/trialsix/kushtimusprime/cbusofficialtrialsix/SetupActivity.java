@@ -33,6 +33,7 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -190,8 +191,9 @@ public class SetupActivity extends AppCompatActivity {
         } else {
             downloadURI=mainImageUri;
         }
-        Map<String,String> userMap=new HashMap<>();
+        Map<String,Object> userMap=new HashMap<>();
         userMap.put("name",username);
+        userMap.put("eventsGoing",new ArrayList<BlogPost>());
         try {
             userMap.put("image", downloadURI.toString());
         } catch (Exception e) {
@@ -238,7 +240,7 @@ public class SetupActivity extends AppCompatActivity {
         } else {
             downloadURI=mainImageUri;
         }
-        Map<String,String> userMap=new HashMap<>();
+        Map<String,Object> userMap=new HashMap<>();
         userMap.put("name",username);
         try {
             userMap.put("image", downloadURI.toString());
@@ -250,6 +252,8 @@ public class SetupActivity extends AppCompatActivity {
         userMap.put("art",art);
         userMap.put("food",food);
         userMap.put("academia",academia);
+        userMap.put("eventsGoing",new ArrayList<BlogPost>());
+        userMap.put("friends",new ArrayList<String>());
         firebaseFirestore.collection("Users").document(userID).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

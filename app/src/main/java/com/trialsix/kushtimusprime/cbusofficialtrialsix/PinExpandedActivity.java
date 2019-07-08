@@ -45,6 +45,7 @@ public class PinExpandedActivity extends AppCompatActivity {
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth firebaseAuth;
     private String blogID;
+    private String userID;
     private ProgressBar setupBar;
 
     @Override
@@ -54,6 +55,8 @@ public class PinExpandedActivity extends AppCompatActivity {
         name=findViewById(R.id.name);
         details=findViewById(R.id.details);
         dateOfEvent=findViewById(R.id.dateOfEvent);
+        firebaseAuth=FirebaseAuth.getInstance();
+        userID=firebaseAuth.getCurrentUser().getUid();
         tickets=findViewById(R.id.tickets);
         address=findViewById(R.id.address);
         image=findViewById(R.id.image);
@@ -73,6 +76,22 @@ public class PinExpandedActivity extends AppCompatActivity {
             Glide.with(PinExpandedActivity.this).setDefaultRequestOptions(placeholderRequest).load(extras.getString("imageUri")).into(image);
         }
         isGoing.setEnabled(false);
+        firebaseFirestore.collection("Users").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    if(task.getResult().exists()) {
+                        Map<String,Object> userData=task.getResult().getData();
+                        ArrayList<String> events=(ArrayList<String>)userData.get("eventsGoing");
+                        if(events.contains(blogID)) {
+                            isGoing.setChecked(true);
+                        }
+                    }
+                }
+            }
+        });
+        isGoing.setEnabled(true);
+      /*  isGoing.setEnabled(false);
         firebaseFirestore.collection("Posts").document(blogID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -89,12 +108,40 @@ public class PinExpandedActivity extends AppCompatActivity {
                 }
                 setupBar.setVisibility(View.INVISIBLE);
             }
-        });
+        });*/
         isGoing.setEnabled(true);
         isGoing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                firebaseFirestore.collection("Posts").document(blogID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                Toast.makeText(PinExpandedActivity.this,"User ID: "+userID,Toast.LENGTH_LONG).show();
+                firebaseFirestore.collection("Users").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()) {
+                            if(task.getResult().exists()) {
+                                Map<String,Object> userData=task.getResult().getData();
+                                ArrayList<String> events=(ArrayList<String>)userData.get("eventsGoing");
+                                if(isGoing.isChecked()==true) {
+                                    if(!events.contains(blogID)) {
+                                        events.add(blogID);
+                                    }
+                                } else {
+                                    if(events.contains(blogID)) {
+                                        events.remove(blogID);
+                                    }
+                                }
+                                userData.put("eventsGoing",events);
+                                firebaseFirestore.collection("Users").document(userID).set(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        Toast.makeText(PinExpandedActivity.this,"Done man",Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+               /* firebaseFirestore.collection("Users").document(blogID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if(task.isSuccessful()) {
@@ -125,7 +172,7 @@ public class PinExpandedActivity extends AppCompatActivity {
                             }
                         }
                     }
-                });
+                });*/
             }
         });
     }

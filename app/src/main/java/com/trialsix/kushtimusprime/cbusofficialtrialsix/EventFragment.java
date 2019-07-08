@@ -8,12 +8,19 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.EventLog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -23,8 +30,10 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -44,39 +53,10 @@ public class EventFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private OnFragmentInteractionListener mListener;
-
-    private RecyclerView eventView;
-
-    private List<BlogPost> blogPosts = new ArrayList<BlogPost>();
-
+    private ArrayList<String> blogPosts;
+    private FirebaseAuth mAuth;
     private FirebaseFirestore firebaseFirestore;
-
-    private EventAdapter eventAdapter;
-
-    private FirebaseAuth firebaseAuth;
-
-    public List<BlogPost> getBlogPosts() {
-
-        return blogPosts;
-
-    }
-
-
-
-    public void setBlogPosts(List<BlogPost> blogPosts) {
-
-        this.blogPosts = blogPosts;
-
-    }
-
-
-
-    private DocumentSnapshot lastVisible;
-
-    private Boolean isFirstPageFirstLoad = true;
-
     public EventFragment() {
         // Required empty public constructor
     }
@@ -116,28 +96,29 @@ public class EventFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_event, container, false);
+        final View view = inflater.inflate(R.layout.fragment_event, container, false);
+        blogPosts=new ArrayList<String>();
+        mAuth=FirebaseAuth.getInstance();
+        firebaseFirestore=FirebaseFirestore.getInstance();
+        final String userID=mAuth.getUid();
+        firebaseFirestore.collection("Users").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    if (task.getResult().exists()) {
+                        Map<String,Object> userData=task.getResult().getData();
+                        blogPosts=(ArrayList<String>)userData.get("eventsGoing");
+                        RecyclerView rvBlogPosts=view.findViewById(R.id.recyclerView);
+                        EventAdapter eventAdapter=new EventAdapter(blogPosts);
+                        rvBlogPosts.setAdapter(eventAdapter);
+                        rvBlogPosts.setLayoutManager(new LinearLayoutManager(getContext()));
+                    }
+                }
 
-        eventView = view.findViewById(R.id.recyclerView);
-
-        firebaseAuth = FirebaseAuth.getInstance();
-
-        eventAdapter = new EventAdapter(blogPosts);
-            eventView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            eventView.setAdapter(eventAdapter);
-
-        for(int i=0;i<20;i++)  {
-            blogPosts.add(new BlogPost(null,null,null,null,null,null,null,"Sample address","Event "+(i+1),null,null));
-        }
-
-        // Inflate the layout for this fragment
+            }
+        });
 
         return view;
     }
@@ -180,4 +161,5 @@ public class EventFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
 }

@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -24,7 +25,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.w3c.dom.Document;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 
 /**
@@ -100,6 +107,8 @@ public class FriendFragment extends Fragment {
             @Override
             public void onClick(final View view) {
                 progressBar.setVisibility(View.VISIBLE);
+                friendSearch.setVisibility(View.GONE);
+                searchButton.setVisibility(View.GONE);
                 final String username=friendSearch.getText().toString();
                 firebaseFirestore.collection("Users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @SuppressLint("RestrictedApi")
@@ -115,7 +124,23 @@ public class FriendFragment extends Fragment {
                                     dataPoint.remove(i);
                                 }
                             }
-                            FriendAdapter friendAdapter=new FriendAdapter(dataPoint,username);
+                            TreeMap<Double,DocumentSnapshot> map=new TreeMap<>();
+
+                            for(int j=0;j<dataPoint.size();j++) {
+                                String fullname=(String)dataPoint.get(j).get("name");
+                                double usernameDouble=username.length();
+                                double fullnameDouble=fullname.length();
+                                double similarityKey=usernameDouble/fullnameDouble;
+                                map.put(similarityKey,dataPoint.get(j));
+                            }
+                            Toast.makeText(getContext(),""+map.size(),Toast.LENGTH_LONG).show();
+                            List<DocumentSnapshot> realStuff=new ArrayList<DocumentSnapshot>();
+                            for (Map.Entry<Double,DocumentSnapshot> entry : map.entrySet()) {
+                                DocumentSnapshot value = entry.getValue();
+                                realStuff.add(value);
+                            }
+                            Collections.reverse(realStuff);
+                            FriendAdapter friendAdapter=new FriendAdapter(realStuff,username);
                             rView.setLayoutManager(new LinearLayoutManager(getContext()));
                             rView.setAdapter(friendAdapter);
                             friendRefresh.setVisibility(View.VISIBLE);

@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements EventFragment.OnF
     private FriendFragment friendFragment;
     private ArrayList<BlogPost> blogPosts=new ArrayList<>();
 //hehehe
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +61,13 @@ public class MainActivity extends AppCompatActivity implements EventFragment.OnF
         notificationFragment = new NotificationFragment();
         eventFragment=new EventFragment();
         friendFragment=new FriendFragment();
-        replaceFragment(notificationFragment);
+        if(getIntent().hasExtra("Friend")) {
+            replaceFragment(friendFragment);
+            addPostButton.setVisibility(View.GONE);
+            refreshButton.setVisibility(View.GONE);
+        } else {
+            replaceFragment(notificationFragment);
+        }
         //allows user to navigate between screens with menu on bottom
         mainBottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @SuppressLint("RestrictedApi")

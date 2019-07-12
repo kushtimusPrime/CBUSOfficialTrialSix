@@ -1,10 +1,14 @@
 package com.trialsix.kushtimusprime.cbusofficialtrialsix;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -46,6 +50,7 @@ public class FriendFragment extends Fragment {
     private ImageButton searchButton;
     private ProgressBar progressBar;
     private FirebaseFirestore firebaseFirestore;
+    private FloatingActionButton friendRefresh;
 
     public FriendFragment() {
         // Required empty public constructor
@@ -78,6 +83,7 @@ public class FriendFragment extends Fragment {
         }
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -87,6 +93,8 @@ public class FriendFragment extends Fragment {
         searchButton=view.findViewById(R.id.searchButton);
         progressBar=view.findViewById(R.id.progressBarFriend);
         final RecyclerView rView=view.findViewById(R.id.friend_view);
+        friendRefresh=view.findViewById(R.id.friendRefresh);
+        friendRefresh.setVisibility(View.GONE);
         firebaseFirestore=FirebaseFirestore.getInstance();
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,6 +102,7 @@ public class FriendFragment extends Fragment {
                 progressBar.setVisibility(View.VISIBLE);
                 final String username=friendSearch.getText().toString();
                 firebaseFirestore.collection("Users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @SuppressLint("RestrictedApi")
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if(task.isSuccessful()) {
@@ -109,43 +118,20 @@ public class FriendFragment extends Fragment {
                             FriendAdapter friendAdapter=new FriendAdapter(dataPoint,username);
                             rView.setLayoutManager(new LinearLayoutManager(getContext()));
                             rView.setAdapter(friendAdapter);
+                            friendRefresh.setVisibility(View.VISIBLE);
                             progressBar.setVisibility(View.INVISIBLE);
+
                         }
                     }
                 });
-                /*final String username=friendSearch.getText().toString();
-                Query friendQuery=firebaseFirestore.collection("Users").orderBy("name",Query.Direction.DESCENDING);
-                friendQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                        try {
-                            for(DocumentChange doc:documentSnapshots.getDocumentChanges()) {
-                                if (doc.getType() == DocumentChange.Type.ADDED) {
-                                    DocumentReference documentReference = doc.getDocument().getReference();
-                                    documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                            if(documentSnapshot.exists()) {
-                                                String name=documentSnapshot.getString("name");
-                                                if(name.contains(username)) {
-                                                    Toast.makeText(getContext(),name,Toast.LENGTH_LONG).show();
-                                                    progressBar.setVisibility(View.INVISIBLE);
-                                                } else {
-                                                    progressBar.setVisibility(View.INVISIBLE);
-                                                }
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-                        } catch (Exception ef) {
-                            Toast.makeText(getContext(),"Error occured",Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });*/
             }
         });
-
+        friendRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getFragmentManager().beginTransaction().detach(FriendFragment.this).attach(FriendFragment.this).commit();
+            }
+        });
         // Create adapter passing in the sample user data
         // Attach the adapter to the recyclerview to populate items
         // Set layout manager to position the items

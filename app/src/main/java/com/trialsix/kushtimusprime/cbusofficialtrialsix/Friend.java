@@ -1,5 +1,9 @@
 package com.trialsix.kushtimusprime.cbusofficialtrialsix;
 
+import com.google.firebase.firestore.DocumentSnapshot;
+
+import java.util.List;
+
 public class Friend {
     private String name;
     private String userID;
@@ -7,6 +11,9 @@ public class Friend {
     public Friend(String name, String userID) {
         this.name = name;
         this.userID = userID;
+    }
+
+    public Friend(List<DocumentSnapshot> dataPoint) {
     }
 
     public String getName() {

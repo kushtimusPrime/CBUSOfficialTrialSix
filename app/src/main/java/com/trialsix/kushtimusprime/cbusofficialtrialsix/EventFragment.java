@@ -103,6 +103,7 @@ public class EventFragment extends Fragment {
         mAuth=FirebaseAuth.getInstance();
         firebaseFirestore=FirebaseFirestore.getInstance();
         final String userID=mAuth.getUid();
+
         firebaseFirestore.collection("Users").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {

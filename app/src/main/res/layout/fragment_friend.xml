@@ -48,7 +48,7 @@
         android:progress="1"/>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/friendRecyclerView"
+        android:id="@+id/friend_view"
         android:layout_width="395dp"
         android:layout_height="627dp"
         android:layout_marginStart="8dp"

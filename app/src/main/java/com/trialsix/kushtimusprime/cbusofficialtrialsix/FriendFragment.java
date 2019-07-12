@@ -3,6 +3,7 @@ package com.trialsix.kushtimusprime.cbusofficialtrialsix;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,20 +13,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentReference;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -88,16 +82,38 @@ public class FriendFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_friend, container, false);
+        final View view= inflater.inflate(R.layout.fragment_friend, container, false);
         friendSearch=view.findViewById(R.id.searchBar);
         searchButton=view.findViewById(R.id.searchButton);
         progressBar=view.findViewById(R.id.progressBarFriend);
+        final RecyclerView rView=view.findViewById(R.id.friend_view);
         firebaseFirestore=FirebaseFirestore.getInstance();
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 progressBar.setVisibility(View.VISIBLE);
                 final String username=friendSearch.getText().toString();
+                firebaseFirestore.collection("Users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()) {
+                            List<DocumentSnapshot> dataPoint=task.getResult().getDocuments();
+                            for(int i=dataPoint.size()-1;i>=0;i--) {
+                                String aName=(String)dataPoint.get(i).get("name");
+                                String up=aName.toUpperCase();
+                                String low=aName.toLowerCase();
+                                if(!up.contains(username.toUpperCase())&&!low.contains(username.toLowerCase())) {
+                                    dataPoint.remove(i);
+                                }
+                            }
+                            FriendAdapter friendAdapter=new FriendAdapter(dataPoint,username);
+                            rView.setLayoutManager(new LinearLayoutManager(getContext()));
+                            rView.setAdapter(friendAdapter);
+                            progressBar.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                });
+                /*final String username=friendSearch.getText().toString();
                 Query friendQuery=firebaseFirestore.collection("Users").orderBy("name",Query.Direction.DESCENDING);
                 friendQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
                     @Override
@@ -126,7 +142,7 @@ public class FriendFragment extends Fragment {
                             Toast.makeText(getContext(),"Error occured",Toast.LENGTH_LONG).show();
                         }
                     }
-                });
+                });*/
             }
         });
 

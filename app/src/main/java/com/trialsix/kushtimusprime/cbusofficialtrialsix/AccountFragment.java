@@ -36,6 +36,7 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -141,35 +142,53 @@ public class AccountFragment extends Fragment {
         setupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                setupBar.setVisibility(View.VISIBLE);
                 final String username = setupName.getText().toString();
                 final boolean sportsBoolean=sportsBox.isChecked();
                 final boolean musicBoolean=musicBox.isChecked();
                 final boolean artBoolean=artBox.isChecked();
                 final boolean foodBoolean=foodBox.isChecked();
                 final boolean academiaBoolean=academiaBox.isChecked();
-                if (!TextUtils.isEmpty(username) && mainImageUri != null) {
+                if (!TextUtils.isEmpty(username)) {
                     setupBar.setVisibility(View.VISIBLE);
-                    if(isChanged) {
-                        userID = firebaseAuth.getCurrentUser().getUid();
-                        final StorageReference imagePath = storageReference.child("profile images").child(userID + ".jpg");
-                        imagePath.putFile(mainImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    storeFirestore(task, username,""+sportsBoolean,""+musicBoolean,""+artBoolean,""+foodBoolean,""+academiaBoolean);
-                                } else {
-                                    String errorMessage = task.getException().getMessage();
-                                    Toast.makeText(getContext(), "Image Error: " + errorMessage, Toast.LENGTH_LONG).show();
-                                    setupBar.setVisibility(View.INVISIBLE);
+                    firebaseFirestore.collection("Users").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if(task.isSuccessful()) {
+                                if(task.getResult().exists()) {
+                                    final ArrayList<String> peopleIRequest=(ArrayList<String>)task.getResult().get("peopleIRequest");
+                                    final ArrayList<String> peopleRequestingMe=(ArrayList<String>)task.getResult().get("peopleRequestingMe");
+                                    final ArrayList<String> eventsGoing=(ArrayList<String>)task.getResult().get("eventsGoing");
+                                    if(isChanged) {
+                                        userID = firebaseAuth.getCurrentUser().getUid();
+                                        final StorageReference imagePath = storageReference.child("profile images").child(userID + ".jpg");
+                                        if(mainImageUri != null) {
+                                            imagePath.putFile(mainImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        storeFirestore(task, username, "" + sportsBoolean, "" + musicBoolean, "" + artBoolean, "" + foodBoolean, "" + academiaBoolean,peopleIRequest,peopleRequestingMe,eventsGoing);
+                                                    } else {
+                                                        String errorMessage = task.getException().getMessage();
+                                                        Toast.makeText(getContext(), "Image Error: " + errorMessage, Toast.LENGTH_LONG).show();
+                                                        setupBar.setVisibility(View.INVISIBLE);
 
+                                                    }
+
+
+                                                }
+                                            });
+                                        } else {
+                                            storeFirestore(null, username,""+sportsBoolean,""+musicBoolean,""+artBoolean,""+foodBoolean,""+academiaBoolean,peopleIRequest,peopleRequestingMe,eventsGoing);
+
+                                        }
+                                    } else {
+                                        storeFirestore(null, username,""+sportsBoolean,""+musicBoolean,""+artBoolean,""+foodBoolean,""+academiaBoolean,peopleIRequest,peopleRequestingMe,eventsGoing);
+                                    }
                                 }
-
-
                             }
-                        });
-                    } else {
-                        storeFirestore(null, username,""+sportsBoolean,""+musicBoolean,""+artBoolean,""+foodBoolean,""+academiaBoolean);
-                    }
+                        }
+                    });
                 }
             }
         });
@@ -211,21 +230,29 @@ public class AccountFragment extends Fragment {
      * @param food- The boolean determining if the user is interested in food
      * @param academia- The boolean determining if the user is interested in academia
      */
-    private void storeFirestore(@NonNull Task<UploadTask.TaskSnapshot> task,String username,String sports,String music,String art,String food,String academia) {
+    private void storeFirestore(@NonNull Task<UploadTask.TaskSnapshot> task,String username,String sports,String music,String art,String food,String academia,ArrayList<String> peopleIRequest,ArrayList<String> peopleRequestingMe,ArrayList<String> eventsGoing) {
         Uri downloadURI;
         if(task!=null) {
             downloadURI = task.getResult().getDownloadUrl();
         } else {
             downloadURI=mainImageUri;
         }
-        Map<String,String> userMap=new HashMap<>();
+        Map<String,Object> userMap=new HashMap<>();
         userMap.put("name",username);
-        userMap.put("image",downloadURI.toString());
+        if(downloadURI==null) {
+            userMap.put("image","defaultUsed");
+        } else {
+            userMap.put("image", downloadURI.toString());
+        }
         userMap.put("sports",sports);
         userMap.put("music",music);
         userMap.put("art",art);
         userMap.put("food",food);
         userMap.put("academia",academia);
+        userMap.put("peopleIRequest",peopleIRequest);
+        userMap.put("peopleRequestingMe",peopleRequestingMe);
+        userMap.put("eventsGoing",eventsGoing);
+        userMap.put("userID",firebaseAuth.getUid());
         firebaseFirestore.collection("Users").document(userID).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

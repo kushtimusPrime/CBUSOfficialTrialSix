@@ -194,11 +194,14 @@ public class SetupActivity extends AppCompatActivity {
         Map<String,Object> userMap=new HashMap<>();
         userMap.put("name",username);
         userMap.put("eventsGoing",new ArrayList<BlogPost>());
+        userMap.put("peopleRequestingMe",new ArrayList<String>());
+        userMap.put("peopleIRequest",new ArrayList<String>());
         try {
             userMap.put("image", downloadURI.toString());
         } catch (Exception e) {
             userMap.put("image","defaultUsed");
         }
+        userMap.put("userID",firebaseAuth.getUid());
         firebaseFirestore.collection("Users").document(userID).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -253,7 +256,9 @@ public class SetupActivity extends AppCompatActivity {
         userMap.put("food",food);
         userMap.put("academia",academia);
         userMap.put("eventsGoing",new ArrayList<BlogPost>());
-        userMap.put("friends",new ArrayList<String>());
+        userMap.put("peopleRequestingMe",new ArrayList<String>());
+        userMap.put("peopleIRequest",new ArrayList<String>());
+        userMap.put("userID",firebaseAuth.getUid());
         firebaseFirestore.collection("Users").document(userID).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

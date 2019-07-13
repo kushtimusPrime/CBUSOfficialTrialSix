@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -58,7 +60,8 @@ public class FriendFragment extends Fragment {
     private ProgressBar progressBar;
     private FirebaseFirestore firebaseFirestore;
     private FloatingActionButton friendRefresh;
-
+    private FirebaseAuth mAuth;
+    private Button seePeopleRequestingMe;
     public FriendFragment() {
         // Required empty public constructor
     }
@@ -99,6 +102,8 @@ public class FriendFragment extends Fragment {
         friendSearch=view.findViewById(R.id.searchBar);
         searchButton=view.findViewById(R.id.searchButton);
         progressBar=view.findViewById(R.id.progressBarFriend);
+        seePeopleRequestingMe=view.findViewById(R.id.seePeopleRequestingMe);
+        mAuth=FirebaseAuth.getInstance();
         final RecyclerView rView=view.findViewById(R.id.friend_view);
         friendRefresh=view.findViewById(R.id.friendRefresh);
         friendRefresh.setVisibility(View.GONE);
@@ -106,6 +111,7 @@ public class FriendFragment extends Fragment {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
+                seePeopleRequestingMe.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
                 friendSearch.setVisibility(View.GONE);
                 searchButton.setVisibility(View.GONE);
@@ -123,6 +129,15 @@ public class FriendFragment extends Fragment {
                                 if(!up.contains(username.toUpperCase())&&!low.contains(username.toLowerCase())) {
                                     dataPoint.remove(i);
                                 }
+                                try {
+                                    String theirName = (String) dataPoint.get(i).get("userID");
+                                    if(theirName.equals(mAuth.getUid())) {
+                                        dataPoint.remove(i);
+                                    }
+                                } catch(Exception e) {
+
+                                }
+
                             }
                             TreeMap<Double,DocumentSnapshot> map=new TreeMap<>();
 
@@ -133,7 +148,6 @@ public class FriendFragment extends Fragment {
                                 double similarityKey=usernameDouble/fullnameDouble;
                                 map.put(similarityKey,dataPoint.get(j));
                             }
-                            Toast.makeText(getContext(),""+map.size(),Toast.LENGTH_LONG).show();
                             List<DocumentSnapshot> realStuff=new ArrayList<DocumentSnapshot>();
                             for (Map.Entry<Double,DocumentSnapshot> entry : map.entrySet()) {
                                 DocumentSnapshot value = entry.getValue();
@@ -158,9 +172,13 @@ public class FriendFragment extends Fragment {
                 getFragmentManager().beginTransaction().detach(FriendFragment.this).attach(FriendFragment.this).commit();
             }
         });
-        // Create adapter passing in the sample user data
-        // Attach the adapter to the recyclerview to populate items
-        // Set layout manager to position the items
+        seePeopleRequestingMe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent seePeopleRequestingMeIntent=new Intent(getContext(),SeePeopleRequestingMeActivity.class);
+                startActivity(seePeopleRequestingMeIntent);
+            }
+        });
         return view;
     }
 

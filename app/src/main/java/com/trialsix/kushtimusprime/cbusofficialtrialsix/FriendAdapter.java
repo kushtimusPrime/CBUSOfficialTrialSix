@@ -8,11 +8,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -25,12 +29,14 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView name;
         public ImageView image;
-
+        public String userID;
+        public Button friendRequest;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
             name=itemView.findViewById(R.id.nameOfFriend);
             image=itemView.findViewById(R.id.profileImageOfFriend);
+            friendRequest=itemView.findViewById(R.id.friendRequest);
         }
 
         @Override
@@ -38,6 +44,15 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
             Intent loginIntent = new Intent(view.getContext(), NewPostActivity.class);
             view.getContext().startActivity(loginIntent);
         }
+
+        public void setUserID(String userID) {
+            this.userID=userID;
+        }
+
+        public String getUserID() {
+            return this.userID;
+        }
+
     }
 
     private List<DocumentSnapshot> documentSnapshots;
@@ -58,9 +73,10 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FriendAdapter.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull final FriendAdapter.ViewHolder viewHolder, int i) {
         DocumentSnapshot documentSnapshot=documentSnapshots.get(i);
         if(documentSnapshot.exists()) {
+            viewHolder.setUserID((String)documentSnapshot.get("userID"));
             String name=(String) documentSnapshot.get("name");
                 String image = (String) documentSnapshot.get("image");
                 TextView nameTextView = viewHolder.name;
@@ -68,7 +84,55 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
                 ImageView imageTextView = viewHolder.image;
                 if(!image.equals("defaultUsed")) {
                     Glide.with(viewHolder.itemView.getContext()).load(image).into(imageTextView);
+                } else {
+                    Glide.with(viewHolder.itemView.getContext()).load(R.drawable.profile_picture).into(imageTextView);
                 }
+                viewHolder.friendRequest.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View view) {
+                        FirebaseAuth mAuth=FirebaseAuth.getInstance();
+                        final String myUserID=mAuth.getUid();
+                        final String theirUserID=viewHolder.getUserID();
+                        final FirebaseFirestore firebaseFirestore=FirebaseFirestore.getInstance();
+                        firebaseFirestore.collection("Users").document(myUserID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if(task.isSuccessful()) {
+                                    if(task.getResult().exists()) {
+                                        Map<String,Object> userData=task.getResult().getData();
+                                        ArrayList<String> peopleIRequest=(ArrayList<String>)userData.get("peopleIRequest");
+                                        peopleIRequest.add(theirUserID);
+                                        userData.put("peopleIRequest",peopleIRequest);
+                                        firebaseFirestore.collection("Users").document(myUserID).set(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        });
+                        firebaseFirestore.collection("Users").document(theirUserID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if(task.isSuccessful()) {
+                                    if(task.getResult().exists()) {
+                                        Map<String,Object> userData=task.getResult().getData();
+                                        ArrayList<String> peopleRequestingMe=(ArrayList<String>)userData.get("peopleRequestingMe");
+                                        peopleRequestingMe.add(myUserID);
+                                        userData.put("peopleRequestingMe",peopleRequestingMe);
+                                        firebaseFirestore.collection("Users").document(theirUserID).set(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                Toast.makeText(view.getContext(),"Friend request sent",Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
 
         }
     }

@@ -143,6 +143,7 @@ public class FriendFragment extends Fragment {
                             FriendAdapter friendAdapter=new FriendAdapter(realStuff,username);
                             rView.setLayoutManager(new LinearLayoutManager(getContext()));
                             rView.setAdapter(friendAdapter);
+                            
                             friendRefresh.setVisibility(View.VISIBLE);
                             progressBar.setVisibility(View.INVISIBLE);
 

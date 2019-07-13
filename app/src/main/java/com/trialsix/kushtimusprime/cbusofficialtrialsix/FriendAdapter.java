@@ -1,13 +1,16 @@
 package com.trialsix.kushtimusprime.cbusofficialtrialsix;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -17,21 +20,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder>{
+public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder> {
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView name;
         public ImageView image;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             name=itemView.findViewById(R.id.nameOfFriend);
             image=itemView.findViewById(R.id.profileImageOfFriend);
+        }
+
+        @Override
+        public void onClick(View view) {
+            Intent loginIntent = new Intent(view.getContext(), NewPostActivity.class);
+            view.getContext().startActivity(loginIntent);
         }
     }
 
     private List<DocumentSnapshot> documentSnapshots;
     private String searched;
+
     public FriendAdapter(List<DocumentSnapshot> documentSnapshots,String searched) {
         this.documentSnapshots=documentSnapshots;
         this.searched=searched;

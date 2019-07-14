@@ -34,8 +34,8 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
-            name=itemView.findViewById(R.id.nameOfFriend);
-            image=itemView.findViewById(R.id.profileImageOfFriend);
+            name=itemView.findViewById(R.id.name_of_friend);
+            image=itemView.findViewById(R.id.profile_image_of_friend);
             friendRequest=itemView.findViewById(R.id.friendRequest);
         }
 

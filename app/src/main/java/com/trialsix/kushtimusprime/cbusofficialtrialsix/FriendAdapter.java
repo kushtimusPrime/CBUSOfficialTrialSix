@@ -76,10 +76,14 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
     public void onBindViewHolder(@NonNull final FriendAdapter.ViewHolder viewHolder, int i) {
         DocumentSnapshot documentSnapshot=documentSnapshots.get(i);
         if(documentSnapshot.exists()) {
+
             viewHolder.setUserID((String)documentSnapshot.get("userID"));
+
             String name=(String) documentSnapshot.get("name");
                 String image = (String) documentSnapshot.get("image");
-                TextView nameTextView = viewHolder.name;
+            final String theirUserID=viewHolder.getUserID();
+
+            TextView nameTextView = viewHolder.name;
                 nameTextView.setText(name);
                 ImageView imageTextView = viewHolder.image;
                 if(!image.equals("defaultUsed")) {
@@ -87,12 +91,25 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
                 } else {
                     Glide.with(viewHolder.itemView.getContext()).load(R.drawable.profile_picture).into(imageTextView);
                 }
+            FirebaseAuth mAuth=FirebaseAuth.getInstance();
+            final String myUserID=mAuth.getUid();
+            FirebaseFirestore firebaseFirestore=FirebaseFirestore.getInstance();
+            firebaseFirestore.collection("Users").document(myUserID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful()) {
+                        if(task.getResult().exists()) {
+                            ArrayList<String> peopleIRequest=(ArrayList<String>)task.getResult().get("peopleIRequest");
+                            if(peopleIRequest.contains(theirUserID)) {
+                                viewHolder.friendRequest.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+                }
+            });
                 viewHolder.friendRequest.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(final View view) {
-                        FirebaseAuth mAuth=FirebaseAuth.getInstance();
-                        final String myUserID=mAuth.getUid();
-                        final String theirUserID=viewHolder.getUserID();
                         final FirebaseFirestore firebaseFirestore=FirebaseFirestore.getInstance();
                         firebaseFirestore.collection("Users").document(myUserID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override

@@ -108,7 +108,6 @@ public class FriendFragment extends Fragment {
         final String myUserID=mAuth.getUid();
         final RecyclerView rView=view.findViewById(R.id.friend_view);
         friendRefresh=view.findViewById(R.id.friendRefresh);
-        friendRefresh.setVisibility(View.GONE);
         firebaseFirestore=FirebaseFirestore.getInstance();
         firebaseFirestore.collection("Users").document(myUserID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -118,7 +117,7 @@ public class FriendFragment extends Fragment {
                         ArrayList<String> friends=(ArrayList<String>)task.getResult().get("friends");
                         RealFriendAdapter realFriendAdapter=new RealFriendAdapter(friends);
                         rView.setAdapter(realFriendAdapter);
-                        //rView.setLayoutManager(new LinearLayoutManager(getContext()));
+                        rView.setLayoutManager(new LinearLayoutManager(getContext()));
                     }
                 }
             }

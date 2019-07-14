@@ -15,7 +15,7 @@ public class SeeFriendActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_see_friend);
         Bundle bundle=getIntent().getExtras();
-        ArrayList<String> friends=(ArrayList<String>)bundle.get("friends");
+        ArrayList<String> friends=(ArrayList<String>)bundle.get("eventsGoing");
         RecyclerView seeFriendRecyclerView=findViewById(R.id.see_friend_recycler_view);
         EventAdapter eventAdapter=new EventAdapter(friends);
         seeFriendRecyclerView.setAdapter(eventAdapter);

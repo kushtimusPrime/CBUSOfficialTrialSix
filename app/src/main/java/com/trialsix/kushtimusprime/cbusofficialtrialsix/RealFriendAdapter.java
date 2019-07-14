@@ -81,6 +81,7 @@ public class RealFriendAdapter extends RecyclerView.Adapter<RealFriendAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull final RealFriendAdapter.ViewHolder viewHolder, final int i) {
         final FirebaseFirestore firebaseFirestore=FirebaseFirestore.getInstance();
+        viewHolder.userID=friends.get(i);
         viewHolder.deleteFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {

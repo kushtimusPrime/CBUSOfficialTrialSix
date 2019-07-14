@@ -110,6 +110,19 @@ public class FriendFragment extends Fragment {
         friendRefresh=view.findViewById(R.id.friendRefresh);
         friendRefresh.setVisibility(View.GONE);
         firebaseFirestore=FirebaseFirestore.getInstance();
+        firebaseFirestore.collection("Users").document(myUserID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    if(task.getResult().exists()) {
+                        ArrayList<String> friends=(ArrayList<String>)task.getResult().get("friends");
+                        RealFriendAdapter realFriendAdapter=new RealFriendAdapter(friends);
+                        rView.setAdapter(realFriendAdapter);
+                        //rView.setLayoutManager(new LinearLayoutManager(getContext()));
+                    }
+                }
+            }
+        });
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {

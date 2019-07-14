@@ -39,7 +39,7 @@ public class PinExpandedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pin_expanded);
-        name=findViewById(R.id.nameOfFriend);
+        name=findViewById(R.id.title_of_event);
         details=findViewById(R.id.details);
         dateOfEvent=findViewById(R.id.dateOfEvent);
         firebaseAuth=FirebaseAuth.getInstance();

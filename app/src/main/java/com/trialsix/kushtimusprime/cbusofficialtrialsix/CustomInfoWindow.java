@@ -27,7 +27,7 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
     @Override
     public View getInfoWindow(Marker marker) {
         View view= ((Activity)context).getLayoutInflater().inflate(R.layout.custom_infowindow,null);
-        TextView name_tv = view.findViewById(R.id.nameOfFriend);
+        TextView name_tv = view.findViewById(R.id.title_of_event);
         TextView details_tv = view.findViewById(R.id.details);
         ImageView img = view.findViewById(R.id.image);
 

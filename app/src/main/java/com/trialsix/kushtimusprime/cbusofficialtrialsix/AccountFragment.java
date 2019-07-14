@@ -159,6 +159,7 @@ public class AccountFragment extends Fragment {
                                     final ArrayList<String> peopleIRequest=(ArrayList<String>)task.getResult().get("peopleIRequest");
                                     final ArrayList<String> peopleRequestingMe=(ArrayList<String>)task.getResult().get("peopleRequestingMe");
                                     final ArrayList<String> eventsGoing=(ArrayList<String>)task.getResult().get("eventsGoing");
+                                    final ArrayList<String> friends = (ArrayList<String>)task.getResult().get("friends");
                                     if(isChanged) {
                                         userID = firebaseAuth.getCurrentUser().getUid();
                                         final StorageReference imagePath = storageReference.child("profile images").child(userID + ".jpg");
@@ -167,7 +168,7 @@ public class AccountFragment extends Fragment {
                                                 @Override
                                                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                                     if (task.isSuccessful()) {
-                                                        storeFirestore(task, username, "" + sportsBoolean, "" + musicBoolean, "" + artBoolean, "" + foodBoolean, "" + academiaBoolean,peopleIRequest,peopleRequestingMe,eventsGoing);
+                                                        storeFirestore(task, username, "" + sportsBoolean, "" + musicBoolean, "" + artBoolean, "" + foodBoolean, "" + academiaBoolean,peopleIRequest,peopleRequestingMe,eventsGoing,friends);
                                                     } else {
                                                         String errorMessage = task.getException().getMessage();
                                                         Toast.makeText(getContext(), "Image Error: " + errorMessage, Toast.LENGTH_LONG).show();
@@ -179,11 +180,11 @@ public class AccountFragment extends Fragment {
                                                 }
                                             });
                                         } else {
-                                            storeFirestore(null, username,""+sportsBoolean,""+musicBoolean,""+artBoolean,""+foodBoolean,""+academiaBoolean,peopleIRequest,peopleRequestingMe,eventsGoing);
+                                            storeFirestore(null, username,""+sportsBoolean,""+musicBoolean,""+artBoolean,""+foodBoolean,""+academiaBoolean,peopleIRequest,peopleRequestingMe,eventsGoing,friends);
 
                                         }
                                     } else {
-                                        storeFirestore(null, username,""+sportsBoolean,""+musicBoolean,""+artBoolean,""+foodBoolean,""+academiaBoolean,peopleIRequest,peopleRequestingMe,eventsGoing);
+                                        storeFirestore(null, username,""+sportsBoolean,""+musicBoolean,""+artBoolean,""+foodBoolean,""+academiaBoolean,peopleIRequest,peopleRequestingMe,eventsGoing,friends);
                                     }
                                 }
                             }
@@ -230,7 +231,7 @@ public class AccountFragment extends Fragment {
      * @param food- The boolean determining if the user is interested in food
      * @param academia- The boolean determining if the user is interested in academia
      */
-    private void storeFirestore(@NonNull Task<UploadTask.TaskSnapshot> task,String username,String sports,String music,String art,String food,String academia,ArrayList<String> peopleIRequest,ArrayList<String> peopleRequestingMe,ArrayList<String> eventsGoing) {
+    private void storeFirestore(@NonNull Task<UploadTask.TaskSnapshot> task,String username,String sports,String music,String art,String food,String academia,ArrayList<String> peopleIRequest,ArrayList<String> peopleRequestingMe,ArrayList<String> eventsGoing, ArrayList<String> friends) {
         Uri downloadURI;
         if(task!=null) {
             downloadURI = task.getResult().getDownloadUrl();
@@ -253,6 +254,8 @@ public class AccountFragment extends Fragment {
         userMap.put("peopleRequestingMe",peopleRequestingMe);
         userMap.put("eventsGoing",eventsGoing);
         userMap.put("userID",firebaseAuth.getUid());
+        userMap.put("friends", friends);
+
         firebaseFirestore.collection("Users").document(userID).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

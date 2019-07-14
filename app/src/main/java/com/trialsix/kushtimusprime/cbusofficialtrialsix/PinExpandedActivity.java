@@ -45,7 +45,7 @@ public class PinExpandedActivity extends AppCompatActivity {
         firebaseAuth=FirebaseAuth.getInstance();
         userID=firebaseAuth.getCurrentUser().getUid();
         tickets=findViewById(R.id.tickets);
-        address=findViewById(R.id.address);
+        address=findViewById(R.id.addressEvent);
         image=findViewById(R.id.image);
         isGoing=findViewById(R.id.checkBox);
         setupBar=findViewById(R.id.progressBar2);

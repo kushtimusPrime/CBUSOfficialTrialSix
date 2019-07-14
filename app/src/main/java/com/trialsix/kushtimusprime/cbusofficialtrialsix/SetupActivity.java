@@ -196,6 +196,7 @@ public class SetupActivity extends AppCompatActivity {
         userMap.put("eventsGoing",new ArrayList<BlogPost>());
         userMap.put("peopleRequestingMe",new ArrayList<String>());
         userMap.put("peopleIRequest",new ArrayList<String>());
+        userMap.put("friends", new ArrayList<String>());
         try {
             userMap.put("image", downloadURI.toString());
         } catch (Exception e) {
@@ -259,6 +260,7 @@ public class SetupActivity extends AppCompatActivity {
         userMap.put("peopleRequestingMe",new ArrayList<String>());
         userMap.put("peopleIRequest",new ArrayList<String>());
         userMap.put("userID",firebaseAuth.getUid());
+        userMap.put("friends", new ArrayList<String>());
         firebaseFirestore.collection("Users").document(userID).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

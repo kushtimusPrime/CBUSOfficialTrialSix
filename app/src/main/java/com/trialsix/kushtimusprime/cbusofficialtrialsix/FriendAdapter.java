@@ -72,7 +72,7 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final FriendAdapter.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull final FriendAdapter.ViewHolder viewHolder, final int i) {
         DocumentSnapshot documentSnapshot=documentSnapshots.get(i);
         if(documentSnapshot.exists()) {
 

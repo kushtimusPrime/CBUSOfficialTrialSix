@@ -29,6 +29,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import org.w3c.dom.Document;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -104,6 +105,7 @@ public class FriendFragment extends Fragment {
         progressBar=view.findViewById(R.id.progressBarFriend);
         seePeopleRequestingMe=view.findViewById(R.id.seePeopleRequestingMe);
         mAuth=FirebaseAuth.getInstance();
+        final String myUserID=mAuth.getUid();
         final RecyclerView rView=view.findViewById(R.id.friend_view);
         friendRefresh=view.findViewById(R.id.friendRefresh);
         friendRefresh.setVisibility(View.GONE);
@@ -175,8 +177,20 @@ public class FriendFragment extends Fragment {
         seePeopleRequestingMe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent seePeopleRequestingMeIntent=new Intent(getContext(),SeePeopleRequestingMeActivity.class);
-                startActivity(seePeopleRequestingMeIntent);
+                final Intent seePeopleRequestingMeIntent=new Intent(getContext(),SeePeopleRequestingMeActivity.class);
+                firebaseFirestore.collection("Users").document(myUserID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()) {
+                            if(task.getResult().exists()) {
+                                ArrayList<String> peopleRequestingMe=(ArrayList<String>)task.getResult().get("peopleRequestingMe");
+                                seePeopleRequestingMeIntent.putExtra("peopleRequestingMe",peopleRequestingMe);
+                                startActivity(seePeopleRequestingMeIntent);
+
+                            }
+                        }
+                    }
+                });
             }
         });
         return view;

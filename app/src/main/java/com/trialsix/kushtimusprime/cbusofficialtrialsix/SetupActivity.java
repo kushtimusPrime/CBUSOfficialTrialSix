@@ -202,6 +202,7 @@ public class SetupActivity extends AppCompatActivity {
         } catch (Exception e) {
             userMap.put("image","defaultUsed");
         }
+        //I like Peter's blood
         userMap.put("userID",firebaseAuth.getUid());
         firebaseFirestore.collection("Users").document(userID).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
